@@ -1,0 +1,17 @@
+node_modules/
+.next/
+coverage/
+.DS_Store
+*.log
+*.tsbuildinfo
+.env*
+!.env.example
+.vercel
+.gstack/
+.claude/
+.cursor/
+.snapshots/
+.vibecheck/
+audit-screenshots/
+graphify-out/cache/
+public/images/.snapshots/
