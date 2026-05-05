@@ -21,9 +21,6 @@ function getClientKey(request: Request): string {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_EMAIL_LEN = 254;
-const DISCOUNT_CODE = 'fangclub';
-const DISCOUNT_EXPIRES = 'June 2, 2026';
-const MINIMUM_PURCHASE = '$55';
 
 // Simple in-memory rate limiter: max 5 requests per IP per 15 minutes
 const rateMap = new Map<string, number[]>();
@@ -62,13 +59,13 @@ export async function POST(request: Request) {
       resend.emails.send({
         from,
         to: email,
-        subject: 'Your Bloodline discount code',
+        subject: 'Bloodline early access confirmed',
         html: `
           <div style="background:#0A0A0A;color:#F2EDE4;font-family:Arial,sans-serif;padding:32px;">
             <p style="letter-spacing:0.24em;text-transform:uppercase;color:#4A7C3F;font-size:11px;">Bloodline Access Confirmed</p>
             <h1 style="font-size:44px;line-height:0.95;margin:12px 0 20px;text-transform:uppercase;">Welcome to the Bloodline.</h1>
-            <p style="font-size:16px;line-height:1.6;">Use code <strong style="color:#4A7C3F;font-size:22px;letter-spacing:0.12em;">${DISCOUNT_CODE}</strong> for 20% off your next Vampire Sex purchase.</p>
-            <p style="font-size:12px;line-height:1.6;color:#B9B0A3;text-transform:uppercase;letter-spacing:0.12em;">Valid through ${DISCOUNT_EXPIRES}. Minimum purchase ${MINIMUM_PURCHASE}. One code per customer.</p>
+            <p style="font-size:16px;line-height:1.6;">You are on the early-access list for upcoming Vampire Sex merch.</p>
+            <p style="font-size:12px;line-height:1.6;color:#B9B0A3;text-transform:uppercase;letter-spacing:0.12em;">Bloodline updates go out before public merch announcements.</p>
           </div>
         `,
       }),
@@ -79,7 +76,7 @@ export async function POST(request: Request) {
         html: `
           <h2>New Bloodline Registry Member</h2>
           <p><strong>Email:</strong> ${safeEmail}</p>
-          <p><strong>Code sent:</strong> ${DISCOUNT_CODE}</p>
+          <p><strong>List:</strong> Merch early access</p>
           <p><strong>Signed up:</strong> ${new Date().toISOString()}</p>
         `,
       }),

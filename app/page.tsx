@@ -52,7 +52,6 @@ export default function Home() {
   const [heroVisible, setHeroVisible] = useState(false);
   const [heroDetailsVisible, setHeroDetailsVisible] = useState(false);
   const [heroIntroStarted, setHeroIntroStarted] = useState(false);
-  const [heroProofStep, setHeroProofStep] = useState(0);
   const [autoplayDiscoPartyBaby, setAutoplayDiscoPartyBaby] = useState(false);
 
   useEffect(() => {
@@ -106,17 +105,6 @@ export default function Home() {
       document.body.style.overflow = '';
     };
   }, [heroIntroStarted]);
-
-  useEffect(() => {
-    if (!heroDetailsVisible) return;
-
-    setHeroProofStep(0);
-    const timers = [1, 2, 3, 4].map((step) => (
-      window.setTimeout(() => setHeroProofStep(step), step * 240)
-    ));
-
-    return () => timers.forEach((timer) => window.clearTimeout(timer));
-  }, [heroDetailsVisible]);
 
   useEffect(() => {
     if (!splashDone) return;
@@ -238,58 +226,30 @@ export default function Home() {
 
             <div
               id="hero-proof-panel"
-              className={`w-full max-w-6xl mt-8 grid gap-8 transition-all duration-700 md:grid-cols-[1.4fr_0.8fr] md:items-end ${
+              className={`mt-10 flex w-full max-w-4xl flex-col justify-center gap-3 transition-all duration-700 sm:flex-row ${
                 heroDetailsVisible ? 'translate-y-0 opacity-100 blur-0' : 'translate-y-4 opacity-0 blur-[2px]'
               }`}
             >
-              <div className="max-w-2xl">
-                <p className="text-base md:text-lg leading-relaxed tracking-[0.08em] uppercase text-[#1A1612]/80">
-                  Miami minimal tech house duo with 2.71M streams, 44 chart placements, 300 DJ supports, and ADE 2025 on the record.
-                </p>
-                <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                  <button
-                    type="button"
-                    onClick={() => scrollToSection('#epk-section')}
-                    className="min-h-[48px] bg-[#1A1612] px-6 py-3 text-[#F2EDE4] font-sans text-xl tracking-[0.12em] uppercase transition-colors hover:bg-[#4A7C3F]"
-                  >
-                    Listen + Press
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setIsOfferModalOpen(true)}
-                    className="min-h-[48px] border-[1.5px] border-[#1A1612] px-6 py-3 font-sans text-xl tracking-[0.12em] uppercase transition-colors hover:border-[#4A7C3F] hover:text-[#4A7C3F]"
-                  >
-                    Book Now
-                  </button>
-                  <Link
-                    href="/epk"
-                    className="min-h-[48px] border-[1.5px] border-[#1A1612]/30 px-6 py-3 font-sans text-xl tracking-[0.12em] uppercase transition-colors hover:border-[#1A1612] hover:bg-[#1A1612] hover:text-[#F2EDE4]"
-                  >
-                    One-Sheet
-                  </Link>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-x-6 gap-y-4 border-t-[1.5px] border-[#1A1612]/20 pt-6 md:border-t-0 md:border-l-[1.5px] md:pl-8">
-                {[
-                  ['2.71M', 'Streams'],
-                  ['44', 'Charts'],
-                  ['300', 'DJ Supports'],
-                  ['ADE 2025', 'Booked'],
-                ].map(([value, label], index) => {
-                  const active = heroProofStep >= index + 1;
-                  return (
-                    <div
-                      key={label}
-                      className={`space-y-1 transition-all duration-500 ${
-                        active ? 'translate-y-0 opacity-100 blur-0' : 'translate-y-4 opacity-0 blur-[2px]'
-                      }`}
-                    >
-                      <p className="font-sans text-3xl md:text-4xl tracking-tight">{active ? value : '—'}</p>
-                      <p className="text-[10px] tracking-[0.28em] uppercase text-[#1A1612]/55">{label}</p>
-                    </div>
-                  );
-                })}
-              </div>
+              <button
+                type="button"
+                onClick={() => scrollToSection('#epk-section')}
+                className="min-h-[48px] bg-[#1A1612] px-6 py-3 text-[#F2EDE4] font-sans text-xl tracking-[0.12em] uppercase transition-colors hover:bg-[#4A7C3F]"
+              >
+                Listen + Press
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsOfferModalOpen(true)}
+                className="min-h-[48px] border-[1.5px] border-[#1A1612] px-6 py-3 font-sans text-xl tracking-[0.12em] uppercase transition-colors hover:border-[#4A7C3F] hover:text-[#4A7C3F]"
+              >
+                Book Now
+              </button>
+              <Link
+                href="/epk"
+                className="min-h-[48px] border-[1.5px] border-[#1A1612]/30 px-6 py-3 text-center font-sans text-xl tracking-[0.12em] uppercase transition-colors hover:border-[#1A1612] hover:bg-[#1A1612] hover:text-[#F2EDE4]"
+              >
+                One-Sheet
+              </Link>
             </div>
           </div>
 
@@ -448,13 +408,11 @@ export default function Home() {
               <span className="text-[#4A7C3F]">✦</span>
               <span className="mx-6">CRIMSON BLOODLINE</span>
               <span className="text-[#4A7C3F]">✦</span>
-              <span className="mx-6">UNDERGROUND MUSIC</span>
+              <span className="mx-6">NEW MERCHANDISE COMING SOON</span>
               <span className="text-[#4A7C3F]">✦</span>
-              <span className="mx-6">LIMITED 50 UNITS</span>
+              <span className="mx-6">BLOODLINE EARLY ACCESS</span>
               <span className="text-[#4A7C3F]">✦</span>
-              <span className="mx-6">NO RESTOCK</span>
-              <span className="text-[#4A7C3F]">✦</span>
-              <span className="mx-6">DROP 001</span>
+              <span className="mx-6">VAMPIRE SEX WORLDWIDE</span>
               <span className="text-[#4A7C3F]">✦</span>
             </div>
           ))}
@@ -466,6 +424,12 @@ export default function Home() {
         <div className="parallax-bg bg-[#0A0A0A]"></div>
         <div className="section-inner section-intro-content relative z-10 max-w-[1600px] mx-auto">
           <CrimsonHeader />
+          <div className="mb-10 flex flex-col gap-3 border-y-[1.5px] border-[#4A7C3F]/35 py-6 text-center">
+            <p className="text-[10px] tracking-[0.42em] text-[#4A7C3F] uppercase">Bloodline Preview</p>
+            <h2 className="font-sans text-5xl leading-none tracking-tighter text-[#F2EDE4] md:text-7xl">
+              New Merchandise Coming Soon
+            </h2>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-[0.5px] bg-[#1A1612] border-[0.5px] border-[#1A1612]">
             {/* Card 1 — top-left (2-col): zoom IN */}
@@ -476,9 +440,8 @@ export default function Home() {
               <div className="flex justify-between items-end">
                 <div>
                   <h3 className="font-sans text-5xl mb-2 tracking-tighter">CRIMSON RELIC TEE</h3>
-                  <p className="text-sm opacity-60">BLOODLINE 01 — ED. OF 100</p>
+                  <p className="text-sm opacity-60">COMING SOON</p>
                 </div>
-                <div className="text-xl">$45</div>
               </div>
             </div>
 
@@ -490,24 +453,21 @@ export default function Home() {
               <div className="flex justify-between items-end">
                 <div>
                   <h3 className="font-sans text-4xl mb-2 tracking-tighter">VOID COVENANT HOODIE</h3>
-                  <p className="text-sm opacity-60">BLOODLINE 01 — ED. OF 50</p>
+                  <p className="text-sm opacity-60">COMING SOON</p>
                 </div>
-                <div className="text-xl">$85</div>
               </div>
             </div>
 
             {/* Card 3 — bottom-left: zoom OUT */}
             <div id="product-bl" className="bg-[#0A0A0A] p-8 group transition-colors duration-200 hover:border-[#4A7C3F] border-[1.5px] border-transparent relative product-card">
-              <div className="absolute top-4 right-4 bg-[#4A7C3F] text-[#F2EDE4] text-xs px-2 py-1 z-10">LOW STOCK</div>
               <div className="aspect-square relative mb-8 bg-[#1A1612]">
                 <Image src="/images/vs_studio_caps_1776346579559.jpg" alt="Nocturne Crown Snapback" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-contain object-center opacity-80" />
               </div>
               <div className="flex justify-between items-end">
                 <div>
                   <h3 className="font-sans text-4xl mb-2 tracking-tighter">NOCTURNE CROWN SNAPBACK</h3>
-                  <p className="text-sm opacity-60">BLOODLINE 01 — ED. OF 50</p>
+                  <p className="text-sm opacity-60">COMING SOON</p>
                 </div>
-                <div className="text-xl">$35</div>
               </div>
             </div>
 
@@ -519,9 +479,8 @@ export default function Home() {
               <div className="flex justify-between items-end">
                 <div>
                   <h3 className="font-sans text-5xl mb-2 tracking-tighter">PARISH CLOAK JACKET</h3>
-                  <p className="text-sm opacity-60">BLOODLINE 01 — ED. OF 25</p>
+                  <p className="text-sm opacity-60">COMING SOON</p>
                 </div>
-                <div className="text-xl">$120</div>
               </div>
             </div>
           </div>
@@ -558,7 +517,6 @@ export default function Home() {
               </ul>
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-8 border-t border-[#4A7C3F]/30 pt-8">
-              <div className="text-5xl font-sans tracking-tighter text-[#4A7C3F] italic">$75</div>
               <button
                 type="button"
                 onClick={() => scrollToSection('#bloodline-section')}
@@ -952,14 +910,14 @@ export default function Home() {
             <div className="relative z-10 p-7 md:p-10">
               <div className="mb-6 flex items-center justify-between gap-4 pr-8">
                 <span className="text-[10px] tracking-[0.36em] text-[#4A7C3F] uppercase">Bloodline Invite</span>
-                <span className="border border-[#8B0000] px-3 py-1 font-mono text-[10px] tracking-[0.24em] text-[#F2EDE4]/70">20% OFF</span>
+                <span className="border border-[#8B0000] px-3 py-1 font-mono text-[10px] tracking-[0.24em] text-[#F2EDE4]/70">EARLY ACCESS</span>
               </div>
 
               {registrySubmitted ? (
                 <div className="py-8 text-center">
                   <p className="font-sans text-5xl md:text-6xl leading-none tracking-tighter">YOU&apos;RE IN.</p>
                   <p className="mx-auto mt-5 max-w-sm text-xs leading-relaxed tracking-[0.18em] text-[#F2EDE4]/60 uppercase">
-                    Check your inbox for code <span className="text-[#4A7C3F]">fangclub</span>. Use it for 20% off any purchase over $55.
+                    You&apos;re on the Bloodline list for early access to Vampire Sex merch.
                   </p>
                   <button
                     type="button"
@@ -975,7 +933,7 @@ export default function Home() {
                     JOIN THE<br />BLOODLINE
                   </h3>
                   <p className="mt-5 max-w-md text-sm leading-relaxed tracking-[0.08em] text-[#F2EDE4]/72 uppercase">
-                    Get 20% off your first Vampire Sex purchase and early access to limited drops.
+                    Get early access to Vampire Sex merch before the next drop goes public.
                   </p>
 
                   <form
@@ -999,14 +957,14 @@ export default function Home() {
                         disabled={registryLoading}
                         className="min-h-[50px] bg-[#4A7C3F] px-7 py-3 font-sans text-xl tracking-[0.12em] text-[#F2EDE4] transition-colors hover:bg-[#E8DCC8] hover:text-[#1A1612] disabled:opacity-50"
                       >
-                        {registryLoading ? 'SENDING' : 'GET CODE'}
+                        {registryLoading ? 'JOINING' : 'JOIN'}
                       </button>
                     </div>
                     {registryError && (
                       <p className="text-[10px] tracking-[0.18em] text-[#E8DCC8] uppercase">{registryError}</p>
                     )}
                     <p className="text-[9px] leading-relaxed tracking-[0.18em] text-[#F2EDE4]/40 uppercase">
-                      Code: fangclub. Valid through June 2, 2026. Minimum purchase $55. One code per customer.
+                      First access only. No spam. Bloodline updates go out before public merch announcements.
                     </p>
                   </form>
                 </>
