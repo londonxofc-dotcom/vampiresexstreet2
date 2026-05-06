@@ -1,11 +1,11 @@
-# Graph Report - vampire-sex-street-main  (2026-05-05)
+# Graph Report - vampire-sex-street-main  (2026-05-06)
 
 ## Corpus Check
-- 37 files · ~581,776 words
+- 37 files · ~582,202 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 118 nodes · 127 edges · 6 communities detected
+- 119 nodes · 128 edges · 6 communities detected
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
@@ -40,7 +40,7 @@
 ## Communities
 
 ### Community 0 - "Community 0"
-Cohesion: 0.22
+Cohesion: 0.2
 Nodes (11): drawLattice(), go(), hueAt(), onKey(), playKeyboardStroke(), primeAudioContext(), pushBoot(), pushStat() (+3 more)
 
 ### Community 1 - "Community 1"

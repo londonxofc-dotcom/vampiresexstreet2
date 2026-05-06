@@ -204,7 +204,7 @@ html {
 }
 
 .magnetic-mark-logo {
-  animation: magnetic-mark-float 5.2s ease-in-out infinite alternate;
+  transform-origin: center center;
 }
 
 @keyframes magnetic-mark-float {
@@ -326,5 +326,62 @@ html {
   .magnetic-mark-section::after {
     animation: none !important;
     transform: none !important;
+  }
+}
+
+.retro-footer-wordmark {
+  color: #f6d6cf;
+  overflow: visible;
+  text-transform: uppercase;
+  -webkit-text-stroke: clamp(2px, 0.36vw, 6px) #fff7ed;
+  filter: drop-shadow(0 18px 0 rgba(25, 45, 72, 0.72));
+}
+
+.retro-3d-word {
+  display: block;
+  position: relative;
+  width: max-content;
+  max-width: 100%;
+  padding-right: 0.08em;
+  color: #f6d6cf;
+  text-shadow:
+    0.045em 0.045em 0 #c77f84,
+    0.09em 0.09em 0 #b94f5f,
+    0.135em 0.135em 0 #ec1716,
+    0.18em 0.18em 0 #f25712,
+    0.225em 0.225em 0 #ffc44d,
+    0.28em 0.28em 0 #1e2e4f;
+}
+
+.retro-3d-word::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  color: transparent;
+  -webkit-text-stroke: clamp(2px, 0.34vw, 5px) rgba(255, 247, 237, 0.74);
+  transform: translate3d(0.035em, 0.035em, 0);
+}
+
+.retro-3d-word-offset {
+  margin-left: 0.28em;
+}
+
+@media (max-width: 767px) {
+  .retro-footer-wordmark {
+    -webkit-text-stroke-width: 1.5px;
+  }
+
+  .retro-3d-word {
+    text-shadow:
+      0.055em 0.055em 0 #c77f84,
+      0.11em 0.11em 0 #ec1716,
+      0.165em 0.165em 0 #f25712,
+      0.22em 0.22em 0 #ffc44d,
+      0.27em 0.27em 0 #1e2e4f;
+  }
+
+  .retro-3d-word-offset {
+    margin-left: 0.12em;
   }
 }

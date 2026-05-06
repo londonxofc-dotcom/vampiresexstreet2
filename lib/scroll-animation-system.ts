@@ -100,7 +100,7 @@ function initSectionZoom() {
 // positioning via CSS sticky + initBlobScroll.
 // ─────────────────────────────────────────────
 function initSectionOverlap() {
-  const sections = gsap.utils.toArray<HTMLElement>('[data-zoom]:not([data-section-intro]):not(#blob-section):not(#about-section)');
+  const sections = gsap.utils.toArray<HTMLElement>('[data-zoom]:not([data-section-intro]):not(#blob-section):not(#about-section):not(#magnetic-mark-section)');
 
   sections.forEach((section, i) => {
     // skip first section — nothing to overlap into
@@ -286,7 +286,7 @@ function initSectionIntros() {
 
     gsap.set(section, {
       position: 'relative',
-      zIndex: CONFIG.overlap.zIndexBase + i + 8,
+      zIndex: section.id === 'about-section' ? 46 : CONFIG.overlap.zIndexBase + i + 8,
       marginTop: i === 0 ? '-4vh' : (isCompact ? CONFIG.intro.compactOverlap : CONFIG.intro.overlap),
       transformStyle: 'preserve-3d',
     });
@@ -703,19 +703,73 @@ function initSectionPins() {
     ScrollTrigger.create({
       trigger: normalize,
       start: 'top top',
-      end: '+=130%',
+      end: '+=145%',
       pin: true,
       pinSpacing: true,
       invalidateOnRefresh: true,
     });
   }
 
+  const magneticMark = document.querySelector<HTMLElement>('#magnetic-mark-section');
+  const magneticLogo = magneticMark?.querySelector<HTMLElement>('.magnetic-mark-logo');
+  if (magneticMark && magneticLogo) {
+    gsap.set(magneticMark, {
+      position: 'relative',
+      zIndex: 24,
+      marginTop: '-28vh',
+      willChange: 'transform',
+    });
+
+    gsap.set(magneticLogo, {
+      opacity: 0,
+      scale: 0.88,
+      y: '4vh',
+      transformOrigin: 'center center',
+      willChange: 'transform, opacity, filter',
+    });
+
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: normalize,
+        start: 'bottom 95%',
+        end: 'bottom 42%',
+        scrub: 1.1,
+        invalidateOnRefresh: true,
+      },
+    }).to(magneticLogo, {
+      opacity: 0.62,
+      scale: 1,
+      y: '0vh',
+      filter: 'blur(0px) saturate(1.05)',
+      ease: 'none',
+      duration: 1,
+    });
+
+    ScrollTrigger.create({
+      trigger: magneticMark,
+      start: 'top top',
+      end: '+=140%',
+      pin: true,
+      pinSpacing: false,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
+    });
+  }
+
   const about = document.querySelector<HTMLElement>('#about-section');
+  if (about) {
+    gsap.set(about, {
+      zIndex: 72,
+      marginTop: window.matchMedia('(min-width: 768px)').matches ? '-118vh' : '-142vh',
+    });
+  }
+
   if (about && window.matchMedia('(min-width: 768px)').matches) {
+
     ScrollTrigger.create({
       trigger: about,
       start: 'top top',
-      end: '+=105%',
+      end: '+=120%',
       pin: true,
       pinSpacing: true,
       invalidateOnRefresh: true,
@@ -852,7 +906,7 @@ export function initScrollAnimations() {
 export function cleanupScrollAnimations() {
   ScrollTrigger.getAll().forEach(t => t.kill());
   document.querySelectorAll('.section-intro-veil, .section-intro-scan, .section-cinematic-overlay, .section-cinematic-edge').forEach(el => el.remove());
-  gsap.set('[data-zoom], [data-section-intro], .section-intro-content, .parallax-bg, .from-left, .from-right, .section-cinematic-overlay, .section-cinematic-edge, #blob-section, #blob-anchor, #hero-section .section-inner, #about-section, #about-vline, #about-hline, .about-quad, .product-card, [data-crimson-header], #editorial-block, #bloodline-ghost, #bloodline-content, .bloodline-line', {
+  gsap.set('[data-zoom], [data-section-intro], .section-intro-content, .parallax-bg, .from-left, .from-right, .section-cinematic-overlay, .section-cinematic-edge, #blob-section, #blob-anchor, #hero-section .section-inner, #normalize-section, #magnetic-mark-section, .magnetic-mark-logo, #about-section, #about-vline, #about-hline, .about-quad, .product-card, [data-crimson-header], #editorial-block, #bloodline-ghost, #bloodline-content, .bloodline-line', {
     clearProps: 'all'
   });
   // Remove resize listener

@@ -128,6 +128,10 @@ type SplashAudioWindow = Window & {
   __vampireSexAudioContext?: AudioContext;
 };
 
+type SplashAmbientAudio = {
+  stop: () => void;
+};
+
 function primeAudioContext() {
   if (typeof window === 'undefined') return;
 
@@ -197,12 +201,119 @@ function playKeyboardStroke() {
   thock.stop(start + 0.065);
 }
 
+function startAmbientCommandCenter(): SplashAmbientAudio | null {
+  if (typeof window === 'undefined') return null;
+
+  const AudioContextCtor = window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+  if (!AudioContextCtor) return null;
+
+  const audioWindow = window as SplashAudioWindow;
+  const ctx = audioWindow.__vampireSexAudioContext;
+  if (!ctx || ctx.state === 'suspended') return null;
+
+  const master = ctx.createGain();
+  const droneBus = ctx.createGain();
+  const beepBus = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
+  const compressors = ctx.createDynamicsCompressor();
+  const oscillators: OscillatorNode[] = [];
+  const timers: number[] = [];
+
+  master.gain.setValueAtTime(0.0001, ctx.currentTime);
+  master.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + 1.8);
+  master.connect(compressors);
+  compressors.connect(ctx.destination);
+
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(260, ctx.currentTime);
+  filter.frequency.linearRampToValueAtTime(1080, ctx.currentTime + 5.4);
+  filter.Q.setValueAtTime(0.7, ctx.currentTime);
+
+  droneBus.gain.setValueAtTime(0.18, ctx.currentTime);
+  beepBus.gain.setValueAtTime(0.11, ctx.currentTime);
+  filter.connect(droneBus);
+  droneBus.connect(master);
+  beepBus.connect(master);
+
+  [55, 82.41, 110, 146.83].forEach((frequency, index) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const detune = [-7, 4, 11, -13][index] ?? 0;
+
+    osc.type = index === 0 ? 'sine' : 'triangle';
+    osc.frequency.setValueAtTime(frequency, ctx.currentTime);
+    osc.detune.setValueAtTime(detune, ctx.currentTime);
+    gain.gain.setValueAtTime(index === 0 ? 0.22 : 0.08, ctx.currentTime);
+    osc.connect(gain);
+    gain.connect(filter);
+    osc.start();
+    oscillators.push(osc);
+  });
+
+  const playBeep = () => {
+    if (ctx.state === 'closed') return;
+
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const toneFilter = ctx.createBiquadFilter();
+    const frequencies = [740, 880, 990, 1240, 660, 1320];
+    const frequency = frequencies[Math.floor(Math.random() * frequencies.length)];
+
+    osc.type = Math.random() > 0.35 ? 'sine' : 'square';
+    osc.frequency.setValueAtTime(frequency, now);
+    osc.frequency.exponentialRampToValueAtTime(frequency * (0.96 + Math.random() * 0.08), now + 0.09);
+    toneFilter.type = 'bandpass';
+    toneFilter.frequency.setValueAtTime(frequency, now);
+    toneFilter.Q.setValueAtTime(5.5, now);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.04 + Math.random() * 0.035, now + 0.006);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.11 + Math.random() * 0.05);
+
+    osc.connect(toneFilter);
+    toneFilter.connect(gain);
+    gain.connect(beepBus);
+    osc.start(now);
+    osc.stop(now + 0.18);
+  };
+
+  const scheduleBeeps = () => {
+    const delay = 130 + Math.random() * 420;
+    const timer = window.setTimeout(() => {
+      playBeep();
+      scheduleBeeps();
+    }, delay);
+    timers.push(timer);
+  };
+
+  scheduleBeeps();
+
+  return {
+    stop: () => {
+      const now = ctx.currentTime;
+      timers.forEach((timer) => window.clearTimeout(timer));
+      master.gain.cancelScheduledValues(now);
+      master.gain.setValueAtTime(Math.max(0.0001, master.gain.value), now);
+      master.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+      oscillators.forEach((osc) => {
+        try {
+          osc.stop(now + 0.5);
+        } catch {
+          // Oscillator may already be stopped during rapid skip.
+        }
+      });
+      window.setTimeout(() => master.disconnect(), 620);
+    },
+  };
+}
+
 // ─── Component ──────────────────────────────────────────────────────────────
 export default function SplashScreen({ onDone }: { onDone: () => void }) {
   const wrapRef   = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef    = useRef<number>(0);
   const doneRef   = useRef(onDone);
+  const ambientRef = useRef<SplashAmbientAudio | null>(null);
   doneRef.current = onDone;
 
   const [bootLines, setBootLines]   = useState<BootLine[]>([]);
@@ -223,6 +334,8 @@ export default function SplashScreen({ onDone }: { onDone: () => void }) {
     if (stage !== 'waiting' || answer) return;
 
     primeAudioContext();
+    ambientRef.current?.stop();
+    ambientRef.current = startAmbientCommandCenter();
     setAnswer('Y');
     setBootLines(prev => [
       ...prev.slice(0, -1),
@@ -239,6 +352,7 @@ export default function SplashScreen({ onDone }: { onDone: () => void }) {
     if (stage !== 'waiting' || answer) return;
 
     primeAudioContext();
+    ambientRef.current?.stop();
     setAnswer('N');
     setBootLines(prev => [
       ...prev.slice(0, -1),
@@ -249,13 +363,39 @@ export default function SplashScreen({ onDone }: { onDone: () => void }) {
   }, [answer, stage]);
 
   const handleSplashTap = useCallback(() => {
+    const shouldTapSkip =
+      typeof window !== 'undefined' &&
+      (window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768);
+
+    if (shouldTapSkip) {
+      ambientRef.current?.stop();
+      ambientRef.current = null;
+      doneRef.current();
+      return;
+    }
+
     if (stage === 'waiting') {
       beginSequence();
       return;
     }
 
+    ambientRef.current?.stop();
+    ambientRef.current = null;
     doneRef.current();
   }, [beginSequence, stage]);
+
+  useEffect(() => {
+    if (stage !== 'fading') return;
+    ambientRef.current?.stop();
+    ambientRef.current = null;
+  }, [stage]);
+
+  useEffect(() => {
+    return () => {
+      ambientRef.current?.stop();
+      ambientRef.current = null;
+    };
+  }, []);
 
   // ── Prompt phase — keyboard gate ────────────────────────────────────────
   useEffect(() => {

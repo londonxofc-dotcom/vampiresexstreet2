@@ -3,7 +3,7 @@
 import { useScrollAnimations } from '@/hooks/useScrollAnimations';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import CrimsonHeader from '@/components/CrimsonHeader';
 import GlobeSymbol from '@/components/GlobeSymbol';
 import TypewriterText from '@/components/TypewriterText';
@@ -53,6 +53,16 @@ export default function Home() {
   const [heroDetailsVisible, setHeroDetailsVisible] = useState(false);
   const [heroIntroStarted, setHeroIntroStarted] = useState(false);
   const [autoplayDiscoPartyBaby, setAutoplayDiscoPartyBaby] = useState(false);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 767px)');
+    const updateMobileState = () => setIsMobileViewport(media.matches);
+
+    updateMobileState();
+    media.addEventListener('change', updateMobileState);
+    return () => media.removeEventListener('change', updateMobileState);
+  }, []);
 
   useEffect(() => {
     if (!splashDone) return;
@@ -93,18 +103,20 @@ export default function Home() {
 
     document.body.style.overflow = 'hidden';
 
-    const revealWordmark = window.setTimeout(() => setHeroVisible(true), 120);
+    const wordmarkDelay = isMobileViewport ? 1200 : 120;
+    const detailsDelay = isMobileViewport ? 3200 : 2050;
+    const revealWordmark = window.setTimeout(() => setHeroVisible(true), wordmarkDelay);
     const revealDetails = window.setTimeout(() => {
       setHeroDetailsVisible(true);
       document.body.style.overflow = '';
-    }, 2050);
+    }, detailsDelay);
 
     return () => {
       window.clearTimeout(revealWordmark);
       window.clearTimeout(revealDetails);
       document.body.style.overflow = '';
     };
-  }, [heroIntroStarted]);
+  }, [heroIntroStarted, isMobileViewport]);
 
   useEffect(() => {
     if (!splashDone) return;
@@ -182,13 +194,6 @@ export default function Home() {
     setSplashDone(true);
   }, []);
 
-  const barcodeBars = useMemo(() => {
-    return [...Array(24)].map((_, i) => ({
-      width: ((i * 13 % 7) * 0.5 + 1) + 'px',
-      height: ((i * 17 % 100) + 20) + '%'
-    }));
-  }, []);
-
   return (
     <main className="bg-[#0A0A0A] min-h-screen">
       {!splashDone && <SplashScreen onDone={completeSplash} />}
@@ -206,13 +211,6 @@ export default function Home() {
 
           {/* Main Wordmark */}
           <div className="flex-grow flex flex-col justify-center items-center px-6 md:px-12 mt-12 mb-10">
-            <div className={`w-full max-w-6xl flex items-center justify-center md:justify-between gap-6 text-[10px] tracking-[0.32em] uppercase mb-8 text-[#1A1612]/60 transition-all duration-700 ${
-              heroDetailsVisible ? 'translate-y-0 opacity-100 blur-0' : 'translate-y-2 opacity-0 blur-[2px]'
-            }`}>
-              <span>Official Site</span>
-              <span className="hidden md:inline">Press · Merch · Bookings</span>
-              <span className="hidden md:inline">Proof On Request</span>
-            </div>
             <h1
               id="hero-wordmark"
               className="font-sans text-[15vw] leading-[0.8] tracking-tighter text-[#1A1612] w-full text-center"
@@ -252,27 +250,6 @@ export default function Home() {
               </Link>
             </div>
           </div>
-
-          {/* Green Accent Bar */}
-          <div className={`w-full bg-[#4A7C3F] text-[#F2EDE4] border-y-[1.5px] border-[#1A1612] py-3 px-6 md:px-12 flex items-center justify-center transition-all duration-700 ${
-            heroDetailsVisible ? 'translate-y-0 opacity-100 blur-0' : 'translate-y-3 opacity-0 blur-[2px]'
-          }`}>
-            <span className="text-center text-sm tracking-[0.24em] uppercase">Miami, FL — Minimal Tech House — Est. 2020</span>
-          </div>
-
-          {/* Bottom Right Elements */}
-          <div className={`absolute bottom-6 right-6 md:right-12 items-end gap-6 hidden md:flex transition-all duration-700 ${
-            heroDetailsVisible ? 'translate-y-0 opacity-100 blur-0' : 'translate-y-3 opacity-0 blur-[2px]'
-          }`}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A1612" strokeWidth="2">
-              <path d="M12 5v14M5 12h14" />
-            </svg>
-            <div className="flex gap-[2px] h-12 items-end">
-              {barcodeBars.map((style, i) => (
-                <div key={i} className="bg-[#1A1612]" style={style}></div>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
@@ -301,7 +278,18 @@ export default function Home() {
               const y1 = 260 + Math.sin(angle) * 64;
               const x2 = 600 + Math.cos(angle) * 194;
               const y2 = 260 + Math.sin(angle) * 194;
-              return <line key={index} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#4A7C3F" strokeOpacity="0.34" strokeWidth="1" />;
+              return (
+                <line
+                  key={index}
+                  x1={Number(x1.toFixed(3))}
+                  y1={Number(y1.toFixed(3))}
+                  x2={Number(x2.toFixed(3))}
+                  y2={Number(y2.toFixed(3))}
+                  stroke="#4A7C3F"
+                  strokeOpacity="0.34"
+                  strokeWidth="1"
+                />
+              );
             })}
             {Array.from({ length: 48 }).map((_, index) => {
               const ring = index % 3;
@@ -309,7 +297,16 @@ export default function Home() {
               const angle = (index / 48) * Math.PI * 2 + ring * 0.22;
               const x = 600 + Math.cos(angle) * radius;
               const y = 260 + Math.sin(angle) * radius;
-              return <circle key={index} cx={x} cy={y} r={ring === 2 ? 3.5 : 2.5} fill={ring === 1 ? '#8B0000' : '#1A1612'} fillOpacity="0.58" />;
+              return (
+                <circle
+                  key={index}
+                  cx={Number(x.toFixed(3))}
+                  cy={Number(y.toFixed(3))}
+                  r={ring === 2 ? 3.5 : 2.5}
+                  fill={ring === 1 ? '#8B0000' : '#1A1612'}
+                  fillOpacity="0.58"
+                />
+              );
             })}
             <path d="M170 260 H1030" stroke="#1A1612" strokeOpacity="0.22" strokeWidth="1.5" />
             <path d="M600 30 V490" stroke="#1A1612" strokeOpacity="0.18" strokeWidth="1.5" />
@@ -322,15 +319,20 @@ export default function Home() {
       </div>
 
       {/* HANDSTYLE MARK — short magnetic parallax flash after Normalize It */}
-      <section data-zoom="neutral" data-compact className="magnetic-mark-section relative z-[18] flex h-[30vh] min-h-[220px] items-center justify-center overflow-hidden bg-[#0A0A0A] px-6 text-[#F2EDE4] md:h-[34vh]">
-        <div className="parallax-bg magnetic-mark-field flex items-center justify-center" aria-hidden="true">
+      <section
+        id="magnetic-mark-section"
+        data-zoom="neutral"
+        data-compact
+        className="magnetic-mark-section relative z-[18] -mt-[12vh] flex h-screen min-h-[560px] items-center justify-center overflow-hidden bg-[#0A0A0A] px-6 text-[#F2EDE4] md:-mt-[18vh]"
+      >
+        <div className="magnetic-mark-field flex items-center justify-center" aria-hidden="true">
           <Image
             src="/images/vampire-sex-red-handstyle-logo.jpeg"
             alt=""
             width={1024}
             height={1024}
             priority={false}
-            className="magnetic-mark-logo h-auto w-[76vw] max-w-[680px] object-contain opacity-55 mix-blend-screen blur-[0.2px] saturate-[0.98] drop-shadow-[0_0_38px_rgba(139,0,0,0.42)]"
+            className="magnetic-mark-logo h-auto w-[84vw] max-w-[760px] object-contain opacity-0 mix-blend-screen blur-[0.2px] saturate-[0.98] drop-shadow-[0_0_38px_rgba(139,0,0,0.42)]"
           />
         </div>
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#4A7C3F]/55 to-transparent" aria-hidden="true" />
@@ -338,7 +340,7 @@ export default function Home() {
       </section>
 
       {/* SECTION 2 — ABOUT / 4-QUADRANT GRID */}
-      <section id="about-section" data-zoom="neutral" data-section-intro="bone" className="bg-[#E8DCC8] text-[#1A1612] border-y-[1.5px] border-[#1A1612] relative z-20 overflow-hidden">
+      <section id="about-section" data-zoom="neutral" data-section-intro="bone" className="bg-[#E8DCC8] text-[#1A1612] border-y-[1.5px] border-[#1A1612] relative z-40 overflow-hidden">
 
         {/* Vertical dividing line.
             All positioning via inline style — [data-zoom]>* CSS forces
@@ -761,14 +763,15 @@ export default function Home() {
         <footer className="max-w-[1600px] mx-auto">
 
           {/* Massive closing wordmark — fade in on scroll */}
-          <div className="overflow-hidden mb-16 from-left" data-fade-in>
-            <h2 className="font-sans text-[16vw] leading-[0.85] tracking-tighter text-[#1A1612]">
-              VAMPIRE<br />SEX
+          <div className="mb-20 overflow-visible from-left" data-fade-in>
+            <h2 className="retro-footer-wordmark font-sans text-[18vw] leading-[0.82] tracking-tighter md:text-[16vw]">
+              <span className="retro-3d-word" data-text="VAMPIRE">VAMPIRE</span>
+              <span className="retro-3d-word retro-3d-word-offset" data-text="SEX">SEX</span>
             </h2>
           </div>
 
           {/* Info grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 border-t-[1.5px] border-[#1A1612] pt-12 mb-12">
+          <div className="grid grid-cols-1 gap-8 border-t-[1.5px] border-[#1A1612] pt-12 mb-12 sm:grid-cols-2 md:grid-cols-4">
             <div className="space-y-3">
               <p className="text-[9px] tracking-[0.3em] opacity-40 uppercase">Label</p>
               <p className="text-sm tracking-wider">Sex Sells Records</p>
@@ -781,7 +784,7 @@ export default function Home() {
               <p className="text-[9px] tracking-[0.3em] opacity-40 uppercase">Bookings</p>
               <a
                 href="mailto:vampiresexworldwide@gmail.com"
-                className="text-sm tracking-wider hover:text-[#4A7C3F] transition-colors block"
+                className="block break-words text-sm tracking-wider transition-colors hover:text-[#4A7C3F]"
               >
                 vampiresexworldwide<br />@gmail.com
               </a>

@@ -21,7 +21,8 @@ export default function Navbar({ visible = true }: NavbarProps) {
   const [contactHidden, setContactHidden] = useState(false);
   const [heroInView, setHeroInView] = useState(true);
   const isMenuOpen = visible && open;
-  const contactVisible = visible && heroInView && !contactHidden;
+  const chromeVisible = visible && (heroInView || isMenuOpen);
+  const contactVisible = chromeVisible && heroInView && !contactHidden;
 
   useEffect(() => {
     const isHeroActive = () => {
@@ -70,7 +71,8 @@ export default function Navbar({ visible = true }: NavbarProps) {
     if (!badge) return;
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (reduceMotion.matches) return;
+    const coarsePointer = window.matchMedia('(pointer: coarse)');
+    if (reduceMotion.matches || coarsePointer.matches) return;
 
     let frame = 0;
     const pointer = { x: 0, y: 0 };
@@ -178,8 +180,8 @@ export default function Navbar({ visible = true }: NavbarProps) {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 w-full z-[200] flex justify-between items-start px-6 md:px-12 py-6 pointer-events-none transition-all duration-700 ${
-        visible ? 'translate-y-0 opacity-100 blur-0' : '-translate-y-4 opacity-0 blur-[2px]'
+      <header className={`fixed top-0 left-0 w-full z-[200] flex justify-between items-start px-4 py-5 pointer-events-none transition-all duration-700 md:px-12 md:py-6 ${
+        chromeVisible ? 'translate-y-0 opacity-100 blur-0' : '-translate-y-4 opacity-0 blur-[2px]'
       }`}>
 
         {/* VS Button — nav toggle */}
@@ -188,15 +190,15 @@ export default function Navbar({ visible = true }: NavbarProps) {
           type="button"
           aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           onClick={() => {
-            if (visible) setOpen(v => !v);
+            if (chromeVisible) setOpen(v => !v);
           }}
-          className={`relative w-16 h-16 flex items-center justify-center focus:outline-none will-change-transform [transform-style:preserve-3d] [perspective:700px] ${visible ? 'pointer-events-auto' : 'pointer-events-none'}`}
+          className={`relative flex h-14 w-14 shrink-0 aspect-square items-center justify-center focus:outline-none will-change-transform [transform-style:preserve-3d] [perspective:700px] md:h-16 md:w-16 ${chromeVisible ? 'pointer-events-auto' : 'pointer-events-none'}`}
         >
           {/* Orbital glow ring */}
           <div className="vs-glow-ring" />
 
           {/* Badge */}
-          <div className="relative w-full h-full rounded-full border-[1.5px] border-[#1A1612] bg-[#E8DCC8] flex items-center justify-center transition-colors duration-300 hover:bg-[#1A1612] group animate-[spin_8s_linear_infinite]">
+          <div className="relative aspect-square h-full w-full rounded-full border-[1.5px] border-[#1A1612] bg-[#E8DCC8] flex items-center justify-center transition-colors duration-300 hover:bg-[#1A1612] group animate-[spin_8s_linear_infinite]">
             <span
               className="font-sans text-2xl tracking-tighter leading-none mt-1 text-[#1A1612] group-hover:text-[#E8DCC8] transition-colors duration-300"
               style={{ fontSize: isMenuOpen ? '1rem' : undefined }}
@@ -208,7 +210,7 @@ export default function Navbar({ visible = true }: NavbarProps) {
 
         {/* Contact Info */}
         <div
-          className="flex items-start gap-8 transition-all duration-500"
+          className="ml-auto flex max-w-[calc(100vw-5.5rem)] items-start justify-end gap-3 transition-all duration-500 md:gap-8"
           style={{
             opacity: contactVisible ? 1 : 0,
             transform: contactVisible ? 'translateY(0)' : 'translateY(-0.5rem)',
@@ -220,7 +222,7 @@ export default function Navbar({ visible = true }: NavbarProps) {
             <p className="text-xs text-[#1A1612]/60 mb-1 mix-blend-exclusion text-white/60">Bookings / Press</p>
             <a
               href="mailto:vampiresexworldwide@gmail.com"
-              className="text-sm hover:text-[#4A7C3F] transition-colors underline underline-offset-4 text-[#1A1612] mix-blend-exclusion text-white"
+              className="block text-[11px] hover:text-[#4A7C3F] transition-colors underline underline-offset-4 text-[#1A1612] mix-blend-exclusion text-white sm:text-sm"
             >
               vampiresexworldwide@gmail.com
             </a>
@@ -233,7 +235,7 @@ export default function Navbar({ visible = true }: NavbarProps) {
               </button>
             </div>
           </div>
-          <div className="flex gap-1 text-[#1A1612]/40 mix-blend-exclusion text-white/40">
+          <div className="hidden gap-1 text-[#1A1612]/40 mix-blend-exclusion text-white/40 sm:flex">
             {[0,1,2,3].map(i => <span key={i} className="text-xl leading-none">|</span>)}
           </div>
         </div>
