@@ -1,12 +1,12 @@
-# Graph Report - vampire-sex-street-main  (2026-05-06)
+# Graph Report - vampire-sex-street-main  (2026-05-12)
 
 ## Corpus Check
-- 37 files · ~582,202 words
+- 39 files · ~768,255 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 119 nodes · 128 edges · 6 communities detected
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.8)
+- 128 nodes · 135 edges · 5 communities detected
+- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
@@ -14,11 +14,10 @@
 - [[_COMMUNITY_Community 1|Community 1]]
 - [[_COMMUNITY_Community 2|Community 2]]
 - [[_COMMUNITY_Community 3|Community 3]]
-- [[_COMMUNITY_Community 4|Community 4]]
-- [[_COMMUNITY_Community 7|Community 7]]
+- [[_COMMUNITY_Community 5|Community 5]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `initScrollAnimations()` - 13 edges
+1. `initScrollAnimations()` - 14 edges
 2. `POST()` - 8 edges
 3. `tick()` - 6 edges
 4. `isHeroActive()` - 4 edges
@@ -30,8 +29,6 @@
 10. `getClientKey()` - 3 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Home()` --calls--> `useScrollAnimations()`  [INFERRED]
-  app/page.tsx → hooks/useScrollAnimations.ts
 - `POST()` --calls--> `getBoundedText()`  [EXTRACTED]
   app/api/registry/route.ts → app/api/offer/route.ts
 - `POST()` --calls--> `parseOfferAmount()`  [EXTRACTED]
@@ -44,8 +41,8 @@ Cohesion: 0.2
 Nodes (11): drawLattice(), go(), hueAt(), onKey(), playKeyboardStroke(), primeAudioContext(), pushBoot(), pushStat() (+3 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.25
-Nodes (13): initAboutSection(), initBlobScroll(), initEditorialFlipOut(), initHeroFade(), initHorizontalParallax(), initProductCards(), initResizeHandler(), initScrollAnimations() (+5 more)
+Cohesion: 0.23
+Nodes (14): initAboutSection(), initBlobScroll(), initEditorialFlipOut(), initHeroFade(), initHorizontalParallax(), initProductCards(), initResizeHandler(), initScrollAnimations() (+6 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.27
@@ -55,17 +52,9 @@ Nodes (9): hideOnForwardScroll(), hideOnTouchScroll(), isHeroActive(), onPointer
 Cohesion: 0.5
 Nodes (7): escapeHtml(), getBoundedText(), getClientKey(), getResend(), isRateLimited(), parseOfferAmount(), POST()
 
-### Community 4 - "Community 4"
+### Community 5 - "Community 5"
 Cohesion: 0.38
 Nodes (3): buildTexture(), createNormalizeTexture(), drawTrackedText()
-
-### Community 7 - "Community 7"
-Cohesion: 0.5
-Nodes (2): Home(), useScrollAnimations()
-
-## Knowledge Gaps
-- **Thin community `Community 7`** (4 nodes): `page.tsx`, `useScrollAnimations.ts`, `Home()`, `useScrollAnimations()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
 _Not enough signal to generate questions. This usually means the corpus has no AMBIGUOUS edges, no bridge nodes, no INFERRED relationships, and all communities are tightly cohesive. Add more files or run with --mode deep to extract richer edges._

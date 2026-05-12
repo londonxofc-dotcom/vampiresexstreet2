@@ -81,22 +81,22 @@ export default function Navbar({ visible = true }: NavbarProps) {
 
     const updateTarget = () => {
       const scroll = window.scrollY || document.documentElement.scrollTop || 0;
-      const scrollX = Math.sin(scroll * 0.012) * 8;
-      const scrollY = Math.min(18, scroll * 0.045);
+      const scrollX = Math.sin(scroll * 0.012) * 4;
+      const scrollY = Math.min(9, scroll * 0.026);
 
       // Cross-axis pull: pointer Y affects X, pointer X affects Y.
-      target.x = scrollX + pointer.y * 12;
-      target.y = scrollY + pointer.x * 10;
-      target.rx = -pointer.x * 10;
-      target.ry = pointer.y * 12;
+      target.x = scrollX + pointer.y * 5;
+      target.y = scrollY + pointer.x * 5;
+      target.rx = -pointer.x * 5;
+      target.ry = pointer.y * 6;
     };
 
     const render = () => {
       frame = 0;
-      current.x += (target.x - current.x) * 0.12;
-      current.y += (target.y - current.y) * 0.12;
-      current.rx += (target.rx - current.rx) * 0.12;
-      current.ry += (target.ry - current.ry) * 0.12;
+      current.x += (target.x - current.x) * 0.1;
+      current.y += (target.y - current.y) * 0.1;
+      current.rx += (target.rx - current.rx) * 0.1;
+      current.ry += (target.ry - current.ry) * 0.1;
 
       badge.style.transform = [
         `translate3d(${current.x.toFixed(2)}px, ${current.y.toFixed(2)}px, 0)`,

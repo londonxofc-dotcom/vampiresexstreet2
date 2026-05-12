@@ -7,6 +7,15 @@ gsap.registerPlugin(ScrollTrigger);
 let resizeHandler: (() => void) | null = null;
 let blobSyncCleanup: (() => void) | null = null;
 
+function shouldUseReducedScroll() {
+  if (typeof window === 'undefined') return true;
+  return (
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+    window.matchMedia('(max-width: 767px)').matches ||
+    window.matchMedia('(pointer: coarse)').matches
+  );
+}
+
 // ─────────────────────────────────────────────
 // CONSTANTS — tweak these to tune the feel
 // ─────────────────────────────────────────────
@@ -42,11 +51,11 @@ const CONFIG = {
 };
 
 const INTRO_COLORS: Record<string, { bg: string; line: string; shadow: string }> = {
-  bone:  { bg: '#E8DCC8', line: '#4A7C3F', shadow: 'rgba(26, 22, 18, 0.32)' },
-  dark:  { bg: '#0A0A0A', line: '#4A7C3F', shadow: 'rgba(0, 0, 0, 0.58)' },
+  bone:  { bg: '#E8DCC8', line: '#8B0000', shadow: 'rgba(26, 22, 18, 0.32)' },
+  dark:  { bg: '#0A0A0A', line: '#8B0000', shadow: 'rgba(0, 0, 0, 0.58)' },
   green: { bg: '#1A1612', line: '#6EC960', shadow: 'rgba(5, 18, 7, 0.48)' },
   blood: { bg: '#140000', line: '#8B0000', shadow: 'rgba(20, 0, 0, 0.64)' },
-  thin:  { bg: '#1A1612', line: '#4A7C3F', shadow: 'rgba(0, 0, 0, 0.42)' },
+  thin:  { bg: '#1A1612', line: '#8B0000', shadow: 'rgba(0, 0, 0, 0.42)' },
 };
 
 // ─────────────────────────────────────────────
@@ -698,25 +707,13 @@ function initSectionPins() {
     };
   }
 
-  const normalize = document.querySelector<HTMLElement>('#normalize-section');
-  if (normalize) {
-    ScrollTrigger.create({
-      trigger: normalize,
-      start: 'top top',
-      end: '+=145%',
-      pin: true,
-      pinSpacing: true,
-      invalidateOnRefresh: true,
-    });
-  }
-
   const magneticMark = document.querySelector<HTMLElement>('#magnetic-mark-section');
   const magneticLogo = magneticMark?.querySelector<HTMLElement>('.magnetic-mark-logo');
   if (magneticMark && magneticLogo) {
     gsap.set(magneticMark, {
       position: 'relative',
       zIndex: 24,
-      marginTop: '-28vh',
+      marginTop: 0,
       willChange: 'transform',
     });
 
@@ -730,9 +727,9 @@ function initSectionPins() {
 
     gsap.timeline({
       scrollTrigger: {
-        trigger: normalize,
-        start: 'bottom 95%',
-        end: 'bottom 42%',
+        trigger: magneticMark,
+        start: 'top 92%',
+        end: 'top 24%',
         scrub: 1.1,
         invalidateOnRefresh: true,
       },
@@ -750,34 +747,49 @@ function initSectionPins() {
       start: 'top top',
       end: '+=140%',
       pin: true,
-      pinSpacing: false,
+      pinSpacing: true,
       anticipatePin: 1,
       invalidateOnRefresh: true,
     });
   }
 
-  const about = document.querySelector<HTMLElement>('#about-section');
-  if (about) {
-    gsap.set(about, {
-      zIndex: 72,
-      marginTop: window.matchMedia('(min-width: 768px)').matches ? '-118vh' : '-142vh',
+  const normalize = document.querySelector<HTMLElement>('#normalize-section');
+  if (normalize) {
+    gsap.set(normalize, {
+      position: 'relative',
+      zIndex: 40,
+      marginTop: '-55vh',
     });
-  }
-
-  if (about && window.matchMedia('(min-width: 768px)').matches) {
 
     ScrollTrigger.create({
-      trigger: about,
+      trigger: normalize,
       start: 'top top',
-      end: '+=120%',
+      end: '+=130%',
       pin: true,
       pinSpacing: true,
+      anticipatePin: 1,
       invalidateOnRefresh: true,
     });
   }
 
-  // The remaining sections flow naturally. Keeping them unpinned reduces
-  // the long dead zones that were making the page feel slower than it is.
+  const products = document.querySelector<HTMLElement>('#products-section');
+  if (products) {
+    gsap.set(products, {
+      position: 'relative',
+      zIndex: 72,
+      marginTop: '-42vh',
+    });
+
+    ScrollTrigger.create({
+      trigger: products,
+      start: 'top top',
+      end: '+=115%',
+      pin: true,
+      pinSpacing: true,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
+    });
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -892,7 +904,9 @@ export function initScrollAnimations() {
   initAboutSection();
   initProductCards();
   initBlobScroll();
-  initSectionPins();
+  if (!shouldUseReducedScroll()) {
+    initSectionPins();
+  }
   initEditorialFlipOut();
   initResizeHandler();
 

@@ -39,9 +39,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${bigShoulders.variable} ${spaceMono.variable}`}>
-      <body suppressHydrationWarning className="bg-[#E8DCC8] text-[#1A1612] font-mono uppercase antialiased selection:bg-[#4A7C3F] selection:text-[#F2EDE4]">
+      <body suppressHydrationWarning className="bg-[#E8DCC8] text-[#1A1612] font-mono antialiased selection:bg-[#8B0000] selection:text-[#F2EDE4]">
         {/* Static border frame */}
-        <div className="fixed inset-[10px] border-[1.5px] border-[#4A7C3F]/30 pointer-events-none z-[60]"></div>
+        <div className="fixed inset-[10px] border-[1.5px] border-[#8B0000]/30 pointer-events-none z-[60]"></div>
         {/* Traveling glow layer — conic gradient rotates over the frame */}
         <div className="border-glow fixed inset-[9px] pointer-events-none z-[60]"></div>
         {children}

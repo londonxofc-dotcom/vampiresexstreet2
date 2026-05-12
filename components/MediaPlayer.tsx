@@ -12,6 +12,7 @@ const tracks = [
 
 type MediaAudioWindow = Window & {
   __vampireSexLandingAudio?: HTMLAudioElement;
+  __vampireSexMuted?: boolean;
 };
 
 export function MediaPlayer({ autoPlayOnMount = false }: { autoPlayOnMount?: boolean }) {
@@ -25,6 +26,7 @@ export function MediaPlayer({ autoPlayOnMount = false }: { autoPlayOnMount?: boo
 
   const setAudioElement = (node: HTMLAudioElement | null) => {
     audioRef.current = node;
+    if (node) node.muted = Boolean((window as MediaAudioWindow).__vampireSexMuted);
   };
 
   // Handle play/pause sync
@@ -35,6 +37,15 @@ export function MediaPlayer({ autoPlayOnMount = false }: { autoPlayOnMount?: boo
       }
 
       if (isPlaying) {
+        if ((window as MediaAudioWindow).__vampireSexMuted) {
+          audioRef.current.pause();
+          return;
+        }
+
+        document.querySelectorAll('audio').forEach((audio) => {
+          if (audio !== audioRef.current) audio.pause();
+        });
+
         audioRef.current.play()
           .then(() => setAutoplayBlocked(false))
           .catch(() => {
@@ -46,6 +57,21 @@ export function MediaPlayer({ autoPlayOnMount = false }: { autoPlayOnMount?: boo
       }
     }
   }, [isPlaying, currentTrack]);
+
+  useEffect(() => {
+    const syncMutedState = () => {
+      const muted = Boolean((window as MediaAudioWindow).__vampireSexMuted);
+      if (audioRef.current) audioRef.current.muted = muted;
+      if (muted) {
+        audioRef.current?.pause();
+        setIsPlaying(false);
+      }
+    };
+
+    syncMutedState();
+    window.addEventListener('vss:sound-muted', syncMutedState);
+    return () => window.removeEventListener('vss:sound-muted', syncMutedState);
+  }, []);
 
   useEffect(() => {
     if (!autoPlayOnMount || autoplayAttemptedRef.current) return;
@@ -83,19 +109,25 @@ export function MediaPlayer({ autoPlayOnMount = false }: { autoPlayOnMount?: boo
 
   const handleNext = () => {
     setCurrentTrack((prev) => (prev < tracks.length - 1 ? prev + 1 : 0));
-    setIsPlaying(true);
+    setIsPlaying(!((window as MediaAudioWindow).__vampireSexMuted));
   };
 
   const handlePrev = () => {
     setCurrentTrack((prev) => (prev > 0 ? prev - 1 : tracks.length - 1));
-    setIsPlaying(true);
+    setIsPlaying(!((window as MediaAudioWindow).__vampireSexMuted));
+  };
+
+  const togglePlayback = () => {
+    if ((window as MediaAudioWindow).__vampireSexMuted) return;
+    setIsPlaying((playing) => !playing);
   };
 
   return (
-    <div className="bg-[#131210] border-[1.5px] border-[#4A7C3F]/30 p-8 w-full max-w-2xl text-[#F2EDE4] font-sans">
+    <div className="bg-[#131210] border-[1.5px] border-[#8B0000]/45 p-8 w-full max-w-2xl text-[#F2EDE4] font-sans">
       <audio
         ref={setAudioElement}
         src={tracks[currentTrack].url}
+        preload="metadata"
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
         onEnded={handleNext}
@@ -121,15 +153,15 @@ export function MediaPlayer({ autoPlayOnMount = false }: { autoPlayOnMount?: boo
           </div>
         </div>
         <div className="flex items-center gap-4 self-end">
-          <button onClick={handlePrev} className="p-2 -m-2 hover:text-[#4A7C3F] transition-colors" aria-label="Previous track">
+          <button onClick={handlePrev} className="p-2 -m-2 hover:text-[#8B0000] transition-colors" aria-label="Previous track">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <polygon points="19 20 9 12 19 4 19 20"></polygon>
               <line x1="5" y1="19" x2="5" y2="5"></line>
             </svg>
           </button>
           <button
-            onClick={() => setIsPlaying(!isPlaying)}
-            className="w-12 h-12 bg-[#E8DCC8] rounded-full flex items-center justify-center text-[#1A1612] hover:bg-[#4A7C3F] hover:text-[#F2EDE4] transition-colors shrink-0"
+            onClick={togglePlayback}
+            className="w-12 h-12 bg-[#E8DCC8] rounded-full flex items-center justify-center text-[#1A1612] hover:bg-[#8B0000] hover:text-[#F2EDE4] transition-colors shrink-0"
           >
             {isPlaying ? (
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -142,7 +174,7 @@ export function MediaPlayer({ autoPlayOnMount = false }: { autoPlayOnMount?: boo
               </svg>
             )}
           </button>
-          <button onClick={handleNext} className="p-2 -m-2 hover:text-[#4A7C3F] transition-colors" aria-label="Next track">
+          <button onClick={handleNext} className="p-2 -m-2 hover:text-[#8B0000] transition-colors" aria-label="Next track">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <polygon points="5 4 15 12 5 20 5 4"></polygon>
               <line x1="19" y1="5" x2="19" y2="19"></line>
@@ -155,13 +187,13 @@ export function MediaPlayer({ autoPlayOnMount = false }: { autoPlayOnMount?: boo
         {tracks.map((track, i) => (
           <div
             key={track.id}
-            className={`flex justify-between items-center p-3 min-h-[44px] cursor-pointer transition-colors ${currentTrack === i ? 'bg-[#1A1612] border-l-[3px] border-[#4A7C3F]' : 'hover:bg-[#1A1612]/50 border-l-[3px] border-transparent'}`}
+            className={`flex justify-between items-center p-3 min-h-[44px] cursor-pointer transition-colors ${currentTrack === i ? 'bg-[#1A1612] border-l-[3px] border-[#8B0000]' : 'hover:bg-[#1A1612]/50 border-l-[3px] border-transparent'}`}
             onClick={() => {
               if (currentTrack === i) {
-                setIsPlaying(!isPlaying);
+                togglePlayback();
               } else {
                 setCurrentTrack(i);
-                setIsPlaying(true);
+                setIsPlaying(!((window as MediaAudioWindow).__vampireSexMuted));
               }
             }}
           >
@@ -171,7 +203,7 @@ export function MediaPlayer({ autoPlayOnMount = false }: { autoPlayOnMount?: boo
                 <Image src={track.artwork} alt={track.title} fill sizes="32px" className="object-cover" />
               </div>
               <div>
-                <p className={`text-sm ${currentTrack === i ? 'text-[#4A7C3F]' : ''}`}>{track.title}</p>
+                <p className={`text-sm ${currentTrack === i ? 'text-[#F2EDE4]' : ''}`}>{track.title}</p>
                 <p className="text-xs opacity-60">{track.artist}</p>
               </div>
             </div>
@@ -182,7 +214,7 @@ export function MediaPlayer({ autoPlayOnMount = false }: { autoPlayOnMount?: boo
         <button
           type="button"
           onClick={() => setIsPlaying(true)}
-          className="mt-5 w-full border border-[#4A7C3F]/45 px-4 py-3 text-left font-mono text-[11px] uppercase tracking-[0.24em] text-[#E8DCC8]/75 transition-colors hover:bg-[#4A7C3F]/15 hover:text-[#E8DCC8]"
+          className="mt-5 w-full border border-[#8B0000]/55 px-4 py-3 text-left font-mono text-[11px] uppercase tracking-[0.24em] text-[#E8DCC8]/75 transition-colors hover:bg-[#8B0000]/20 hover:text-[#E8DCC8]"
         >
           Audio blocked by browser. Tap to start Disco Party Baby.
         </button>

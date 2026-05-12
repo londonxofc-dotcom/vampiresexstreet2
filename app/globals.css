@@ -23,11 +23,11 @@
     from var(--border-angle),
     transparent 0%,
     transparent 35%,
-    #2d5c2580 46%,
-    #4A7C3F   50%,
-    #6ec960cc 50%,
-    #4A7C3F   54%,
-    #2d5c2580 56%,
+    #3a000080 46%,
+    #8B0000   50%,
+    #ff1a1acc 50%,
+    #8B0000   54%,
+    #3a000080 56%,
     transparent 65%,
     transparent 100%
   );
@@ -68,9 +68,9 @@
     from var(--vs-angle),
     transparent 0%,
     transparent 60%,
-    #4A7C3Faa 78%,
-    #6ec960ff 80%,
-    #4A7C3Faa 82%,
+    #8B0000aa 78%,
+    #ff1a1aff 80%,
+    #8B0000aa 82%,
     transparent 100%
   );
   -webkit-mask:
@@ -184,14 +184,14 @@ html {
 .magnetic-mark-section::before {
   background:
     radial-gradient(ellipse at 42% 50%, rgba(139, 0, 0, 0.28), transparent 54%),
-    linear-gradient(90deg, transparent, rgba(74, 124, 63, 0.18), transparent);
+    linear-gradient(90deg, transparent, rgba(139, 0, 0, 0.18), transparent);
   animation: magnetic-pull-a 4.8s ease-in-out infinite alternate;
 }
 
 .magnetic-mark-section::after {
   inset: 28% 16%;
   background:
-    radial-gradient(ellipse at 58% 50%, rgba(110, 201, 96, 0.12), transparent 52%),
+    radial-gradient(ellipse at 58% 50%, rgba(255, 26, 26, 0.12), transparent 52%),
     linear-gradient(90deg, transparent 10%, rgba(139, 0, 0, 0.24), transparent 88%);
   animation: magnetic-pull-b 5.6s ease-in-out infinite alternate;
 }
@@ -199,7 +199,7 @@ html {
 .magnetic-mark-field {
   background:
     radial-gradient(circle at 50% 48%, rgba(139, 0, 0, 0.26), rgba(10, 10, 10, 0) 62%),
-    repeating-linear-gradient(90deg, rgba(74, 124, 63, 0.055) 0 1px, transparent 1px 42px),
+    repeating-linear-gradient(90deg, rgba(139, 0, 0, 0.07) 0 1px, transparent 1px 42px),
     #0A0A0A;
 }
 
@@ -342,6 +342,7 @@ html {
   position: relative;
   width: max-content;
   max-width: 100%;
+  margin-inline: auto;
   padding-right: 0.08em;
   color: #f6d6cf;
   text-shadow:
@@ -364,7 +365,8 @@ html {
 }
 
 .retro-3d-word-offset {
-  margin-left: 0.28em;
+  margin-left: auto;
+  transform: translateX(0.28em);
 }
 
 @media (max-width: 767px) {
@@ -382,6 +384,7 @@ html {
   }
 
   .retro-3d-word-offset {
-    margin-left: 0.12em;
+    margin-left: auto;
+    transform: translateX(0.12em);
   }
 }

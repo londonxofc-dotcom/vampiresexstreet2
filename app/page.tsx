@@ -7,29 +7,22 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import CrimsonHeader from '@/components/CrimsonHeader';
 import GlobeSymbol from '@/components/GlobeSymbol';
 import TypewriterText from '@/components/TypewriterText';
-import SlotMachineText from '@/components/SlotMachineText';
 import SplitFlapText, { SplitFlapHandle } from '@/components/SplitFlapText';
-import GlitchText from '@/components/GlitchText';
 import TextScramble from '@/components/TextScramble';
 import Navbar from '@/components/Navbar';
 import { StatCounter } from '@/components/StatCounter';
 import { MediaPlayer } from '@/components/MediaPlayer';
-import dynamic from 'next/dynamic';
-
-const SplashScreen = dynamic(() => import('@/components/SplashScreen'), { ssr: false });
+import VideoIntro from '@/components/VideoIntro';
+import SoundToggle from '@/components/SoundToggle';
 
 export default function Home() {
   const splitFlapRef = useRef<SplitFlapHandle>(null);
-  const [splashDone, setSplashDone] = useState(false);
+  const [introDone, setIntroDone] = useState(false);
 
   useEffect(() => {
-    const forceSplash = new URLSearchParams(window.location.search).has('splash');
-    if (forceSplash) { setSplashDone(false); return; }
-    const stored = window.localStorage.getItem('vampire-sex-splash-ts');
-    const FIVE_MIN = 5 * 60 * 1000;
-    const hasSeenSplash = stored ? (Date.now() - Number(stored)) < FIVE_MIN : false;
-    if (hasSeenSplash) {
-      setSplashDone(true);
+    const forceIntro = new URLSearchParams(window.location.search).has('intro');
+    if (!forceIntro && window.sessionStorage.getItem('vss-video-intro-seen') === 'true') {
+      setIntroDone(true);
     }
   }, []);
 
@@ -40,7 +33,7 @@ export default function Home() {
   }, []);
 
   const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
-  useScrollAnimations(splashDone ? 'ready' : 'waiting');
+  useScrollAnimations(introDone ? 'ready' : 'waiting');
 
   const [registrySubmitted, setRegistrySubmitted] = useState(false);
   const [registryLoading, setRegistryLoading] = useState(false);
@@ -52,7 +45,6 @@ export default function Home() {
   const [heroVisible, setHeroVisible] = useState(false);
   const [heroDetailsVisible, setHeroDetailsVisible] = useState(false);
   const [heroIntroStarted, setHeroIntroStarted] = useState(false);
-  const [autoplayDiscoPartyBaby, setAutoplayDiscoPartyBaby] = useState(false);
   const [isMobileViewport, setIsMobileViewport] = useState(false);
 
   useEffect(() => {
@@ -65,7 +57,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (!splashDone) return;
+    if (!introDone) return;
 
     const hero = document.querySelector('#hero-section');
     if (!hero) return;
@@ -80,10 +72,10 @@ export default function Home() {
     observer.observe(hero);
 
     return () => observer.disconnect();
-  }, [splashDone]);
+  }, [introDone]);
 
   useEffect(() => {
-    if (!splashDone) return;
+    if (!introDone) return;
 
     const resetScroll = () => {
       window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
@@ -96,7 +88,7 @@ export default function Home() {
     return () => {
       window.cancelAnimationFrame(raf);
     };
-  }, [splashDone]);
+  }, [introDone]);
 
   useEffect(() => {
     if (!heroIntroStarted) return;
@@ -119,7 +111,7 @@ export default function Home() {
   }, [heroIntroStarted, isMobileViewport]);
 
   useEffect(() => {
-    if (!splashDone) return;
+    if (!introDone) return;
     if (registrySubmitted || bloodlinePopupDismissed) return;
     const hasSeenPopup = window.sessionStorage.getItem('bloodline-popup-seen') === 'true';
     if (hasSeenPopup) return;
@@ -138,7 +130,12 @@ export default function Home() {
     observer.observe(target);
 
     return () => observer.disconnect();
-  }, [bloodlinePopupDismissed, registrySubmitted, splashDone]);
+  }, [bloodlinePopupDismissed, introDone, registrySubmitted]);
+
+  const completeIntro = useCallback(() => {
+    window.sessionStorage.setItem('vss-video-intro-seen', 'true');
+    setIntroDone(true);
+  }, []);
 
   const closeBloodlinePopup = useCallback(() => {
     setIsBloodlinePopupOpen(false);
@@ -188,17 +185,12 @@ export default function Home() {
     }
   }, []);
 
-  const completeSplash = useCallback(() => {
-    window.localStorage.setItem('vampire-sex-splash-ts', String(Date.now()));
-    setAutoplayDiscoPartyBaby(true);
-    setSplashDone(true);
-  }, []);
-
   return (
     <main className="bg-[#0A0A0A] min-h-screen">
-      {!splashDone && <SplashScreen onDone={completeSplash} />}
+      {!introDone && <VideoIntro onDone={completeIntro} />}
 
-      <Navbar visible={heroDetailsVisible} />
+      <Navbar visible={introDone && (heroIntroStarted || heroDetailsVisible)} />
+      <SoundToggle visible={introDone} />
 
       {/* SECTION 1 — HERO */}
       <section
@@ -231,20 +223,20 @@ export default function Home() {
               <button
                 type="button"
                 onClick={() => scrollToSection('#epk-section')}
-                className="min-h-[48px] bg-[#1A1612] px-6 py-3 text-[#F2EDE4] font-sans text-xl tracking-[0.12em] uppercase transition-colors hover:bg-[#4A7C3F]"
+                className="min-h-[54px] bg-[#1A1612] px-7 py-4 text-[#F2EDE4] font-sans text-xl tracking-[0.12em] uppercase transition-colors hover:bg-[#8B0000]"
               >
                 Listen + Press
               </button>
               <button
                 type="button"
                 onClick={() => setIsOfferModalOpen(true)}
-                className="min-h-[48px] border-[1.5px] border-[#1A1612] px-6 py-3 font-sans text-xl tracking-[0.12em] uppercase transition-colors hover:border-[#4A7C3F] hover:text-[#4A7C3F]"
+                className="min-h-[54px] border-[1.5px] border-[#1A1612] px-7 py-4 font-sans text-xl tracking-[0.12em] uppercase transition-colors hover:border-[#8B0000] hover:text-[#8B0000]"
               >
                 Book Now
               </button>
               <Link
                 href="/epk"
-                className="min-h-[48px] border-[1.5px] border-[#1A1612]/30 px-6 py-3 text-center font-sans text-xl tracking-[0.12em] uppercase transition-colors hover:border-[#1A1612] hover:bg-[#1A1612] hover:text-[#F2EDE4]"
+                className="min-h-[54px] border-[1.5px] border-[#1A1612]/30 px-7 py-4 text-center font-sans text-xl tracking-[0.12em] uppercase transition-colors hover:border-[#8B0000] hover:bg-[#8B0000] hover:text-[#F2EDE4]"
               >
                 One-Sheet
               </Link>
@@ -253,8 +245,77 @@ export default function Home() {
         </div>
       </section>
 
-      {/* NORMALIZE IT — typewriter text between blob and about */}
-      <div id="normalize-section" className="relative z-[17] flex min-h-[420px] items-center justify-center overflow-hidden bg-[#E8DCC8] py-16 text-[#1A1612] md:min-h-[460px]">
+      {/* IDENTITY STRIPE — restored mobile/readability anchor */}
+      <section
+        id="identity-stripe"
+        data-zoom="neutral"
+        data-compact
+        className="relative z-[16] border-y-[1.5px] border-[#1A1612] bg-[#8B0000] px-6 py-3 text-[#F2EDE4] md:px-12"
+      >
+        <div className="mx-auto flex max-w-[1600px] flex-col items-center justify-center gap-1 text-center sm:flex-row sm:justify-between">
+          <span className="text-[10px] tracking-[0.34em] uppercase">Underground Music</span>
+          <span className="text-[10px] tracking-[0.24em] uppercase opacity-80">Miami, FL — Minimal Tech House — Est. 2020</span>
+          <span className="text-[10px] tracking-[0.34em] uppercase">Streetwear</span>
+        </div>
+      </section>
+
+      {/* SECTION 2 — PROOF / CONTEXT */}
+      <section id="about-section" data-zoom="neutral" data-section-intro="bone" className="bg-[#E8DCC8] text-[#1A1612] border-y-[1.5px] border-[#1A1612] relative z-30 overflow-hidden">
+        <div className="section-intro-content mx-auto grid max-w-[1600px] grid-cols-1 md:grid-cols-12">
+          <div className="border-b-[1.5px] border-[#1A1612] p-8 md:col-span-5 md:border-b-0 md:border-r-[1.5px] md:p-14 lg:p-20">
+            <p className="mb-6 text-[10px] uppercase tracking-[0.42em] opacity-45">Proof before myth</p>
+            <h2 className="font-sans text-[17vw] leading-[0.78] tracking-tighter md:text-[7vw]">
+              BUILT FOR<br />PACKED ROOMS
+            </h2>
+            <p className="mt-8 max-w-md text-lg normal-case leading-7 tracking-normal opacity-75">
+              Vampire Sex is not a costume page. It is a Miami minimal tech house project with streaming proof, chart history, DJ support, and a world that can expand into products without becoming a standard merch store.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:col-span-7">
+            <div className="border-b border-r border-[#1A1612]/40 p-7 md:p-10">
+              <p className="font-sans text-6xl leading-none tracking-tighter md:text-7xl">2.71M</p>
+              <p className="mt-3 text-[10px] uppercase tracking-[0.28em] opacity-55">Total Streams</p>
+            </div>
+            <div className="border-b border-[#1A1612]/40 p-7 md:p-10">
+              <p className="font-sans text-6xl leading-none tracking-tighter md:text-7xl">9.9M</p>
+              <p className="mt-3 text-[10px] uppercase tracking-[0.28em] opacity-55">Video Views</p>
+            </div>
+            <div className="border-r border-[#1A1612]/40 p-7 md:p-10">
+              <p className="font-sans text-6xl leading-none tracking-tighter md:text-7xl">44</p>
+              <p className="mt-3 text-[10px] uppercase tracking-[0.28em] opacity-55">Chart Placements</p>
+            </div>
+            <div className="p-7 md:p-10">
+              <p className="font-sans text-6xl leading-none tracking-tighter md:text-7xl">300</p>
+              <p className="mt-3 text-[10px] uppercase tracking-[0.28em] opacity-55">DJ Supports</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 3 — MYTH / VISUAL INTERLUDE */}
+      <section
+        id="magnetic-mark-section"
+        data-zoom="neutral"
+        data-compact
+        className="magnetic-mark-section relative z-[17] flex h-screen min-h-[560px] items-center justify-center overflow-hidden bg-[#0A0A0A] px-6 text-[#F2EDE4]"
+      >
+        <div className="magnetic-mark-field flex items-center justify-center" aria-hidden="true">
+          <Image
+            src="/images/vampire-sex-red-handstyle-logo.jpeg"
+            alt=""
+            width={1024}
+            height={1024}
+            priority={false}
+            className="magnetic-mark-logo h-auto w-[84vw] max-w-[760px] object-contain opacity-0 mix-blend-screen blur-[0.2px] saturate-[0.98] drop-shadow-[0_0_38px_rgba(139,0,0,0.42)]"
+          />
+        </div>
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#4A7C3F]/55 to-transparent" aria-hidden="true" />
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#4A7C3F]/35 to-transparent" aria-hidden="true" />
+      </section>
+
+      {/* NORMALIZE IT — short atmospheric bridge into products */}
+      <div id="normalize-section" className="relative z-[18] flex h-screen min-h-[560px] items-center justify-center overflow-hidden bg-[#E8DCC8] py-16 text-[#1A1612]">
         <div className="absolute inset-0 flex items-center justify-center opacity-[0.18]" aria-hidden="true">
           <svg className="h-full w-full max-w-[1500px]" viewBox="0 0 1200 520" preserveAspectRatio="xMidYMid meet">
             <defs>
@@ -318,29 +379,8 @@ export default function Home() {
         </h2>
       </div>
 
-      {/* HANDSTYLE MARK — short magnetic parallax flash after Normalize It */}
-      <section
-        id="magnetic-mark-section"
-        data-zoom="neutral"
-        data-compact
-        className="magnetic-mark-section relative z-[18] -mt-[12vh] flex h-screen min-h-[560px] items-center justify-center overflow-hidden bg-[#0A0A0A] px-6 text-[#F2EDE4] md:-mt-[18vh]"
-      >
-        <div className="magnetic-mark-field flex items-center justify-center" aria-hidden="true">
-          <Image
-            src="/images/vampire-sex-red-handstyle-logo.jpeg"
-            alt=""
-            width={1024}
-            height={1024}
-            priority={false}
-            className="magnetic-mark-logo h-auto w-[84vw] max-w-[760px] object-contain opacity-0 mix-blend-screen blur-[0.2px] saturate-[0.98] drop-shadow-[0_0_38px_rgba(139,0,0,0.42)]"
-          />
-        </div>
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#4A7C3F]/55 to-transparent" aria-hidden="true" />
-        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#4A7C3F]/35 to-transparent" aria-hidden="true" />
-      </section>
-
-      {/* SECTION 2 — ABOUT / 4-QUADRANT GRID */}
-      <section id="about-section" data-zoom="neutral" data-section-intro="bone" className="bg-[#E8DCC8] text-[#1A1612] border-y-[1.5px] border-[#1A1612] relative z-40 overflow-hidden">
+      {/* LEGACY ABOUT GRID — temporarily hidden after the proof restructure */}
+      <section id="about-archive-section" className="hidden bg-[#E8DCC8] text-[#1A1612] border-y-[1.5px] border-[#1A1612] relative z-40 overflow-hidden">
 
         {/* Vertical dividing line.
             All positioning via inline style — [data-zoom]>* CSS forces
@@ -367,9 +407,7 @@ export default function Home() {
                 Vampire Sex is a Miami minimal tech house duo built for packed rooms, heavy low end, and records that survive past the first weekend.
               </TypewriterText>
               <br /><br />
-              <SlotMachineText>Streaming proof. Club proof.</SlotMachineText>
-              {' '}
-              <GlitchText>No filler.</GlitchText>
+              <span>Streaming proof. Club proof. No filler.</span>
             </p>
           </div>
 
@@ -402,20 +440,20 @@ export default function Home() {
       </section>
 
       {/* SECTION 3 — MARQUEE TICKER */}
-      <section data-zoom="neutral" data-compact data-section-intro="thin" className="bg-[#1A1612] text-[#F2EDE4] py-4 overflow-hidden border-b-[1.5px] border-[#4A7C3F] relative z-20">
+      <section data-zoom="neutral" data-compact data-section-intro="thin" className="bg-[#1A1612] text-[#F2EDE4] py-4 overflow-hidden border-b-[1.5px] border-[#8B0000] relative z-20">
         <div className="flex whitespace-nowrap animate-[marquee_20s_linear_infinite]">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="flex items-center font-sans text-xl sm:text-3xl md:text-4xl tracking-wide">
               <span className="mx-6">VAMPIRE SEX</span>
-              <span className="text-[#4A7C3F]">✦</span>
+              <span className="text-[#8B0000]">✦</span>
               <span className="mx-6">CRIMSON BLOODLINE</span>
-              <span className="text-[#4A7C3F]">✦</span>
+              <span className="text-[#8B0000]">✦</span>
               <span className="mx-6">NEW MERCHANDISE COMING SOON</span>
-              <span className="text-[#4A7C3F]">✦</span>
+              <span className="text-[#8B0000]">✦</span>
               <span className="mx-6">BLOODLINE EARLY ACCESS</span>
-              <span className="text-[#4A7C3F]">✦</span>
+              <span className="text-[#8B0000]">✦</span>
               <span className="mx-6">VAMPIRE SEX WORLDWIDE</span>
-              <span className="text-[#4A7C3F]">✦</span>
+              <span className="text-[#8B0000]">✦</span>
             </div>
           ))}
         </div>
@@ -426,62 +464,65 @@ export default function Home() {
         <div className="parallax-bg bg-[#0A0A0A]"></div>
         <div className="section-inner section-intro-content relative z-10 max-w-[1600px] mx-auto">
           <CrimsonHeader />
-          <div className="mb-10 flex flex-col gap-3 border-y-[1.5px] border-[#4A7C3F]/35 py-6 text-center">
-            <p className="text-[10px] tracking-[0.42em] text-[#4A7C3F] uppercase">Bloodline Preview</p>
+          <div className="mb-12 flex flex-col gap-4 border-y-[1.5px] border-[#8B0000]/45 py-8 text-center">
+            <p className="text-[10px] tracking-[0.42em] text-[#8B0000] uppercase">Drop Archive / Preview</p>
             <h2 className="font-sans text-5xl leading-none tracking-tighter text-[#F2EDE4] md:text-7xl">
-              New Merchandise Coming Soon
+              New Merchandise In Development
             </h2>
+            <p className="mx-auto max-w-2xl text-base leading-7 normal-case tracking-normal text-[#F2EDE4]/62">
+              Product studies from the Vampire Sex world. Not a store yet; these are artifacts being shaped for the Bloodline registry.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-[0.5px] bg-[#1A1612] border-[0.5px] border-[#1A1612]">
             {/* Card 1 — top-left (2-col): zoom IN */}
-            <div id="product-tl" className="md:col-span-2 bg-[#E8DCC8] text-[#1A1612] p-8 group transition-colors duration-200 hover:border-[#4A7C3F] border-[1.5px] border-transparent relative product-card">
+            <div id="product-tl" className="md:col-span-2 bg-[#E8DCC8] text-[#1A1612] p-8 group transition-colors duration-200 hover:border-[#8B0000] border-[1.5px] border-transparent relative product-card">
               <div className="aspect-[4/3] relative mb-8 bg-[#0A0A0A]/5">
                 <Image src="/images/vs_urban_tees_1776346145677.jpg" alt="Crimson Relic Tee" fill sizes="(max-width: 768px) 100vw, 66vw" className="object-contain object-center mix-blend-multiply" />
               </div>
               <div className="flex justify-between items-end">
                 <div>
                   <h3 className="font-sans text-5xl mb-2 tracking-tighter">CRIMSON RELIC TEE</h3>
-                  <p className="text-sm opacity-60">COMING SOON</p>
+                  <p className="text-sm normal-case tracking-normal opacity-60">Registry preview. Final drop details pending.</p>
                 </div>
               </div>
             </div>
 
             {/* Card 2 — top-right: zoom OUT */}
-            <div id="product-tr" className="bg-[#0A0A0A] p-8 group transition-colors duration-200 hover:border-[#4A7C3F] border-[1.5px] border-transparent relative product-card">
+            <div id="product-tr" className="bg-[#0A0A0A] p-8 group transition-colors duration-200 hover:border-[#8B0000] border-[1.5px] border-transparent relative product-card">
               <div className="aspect-square relative mb-8 bg-[#1A1612]">
                 <Image src="/images/vs_urban_hoodies_1776346269547.jpg" alt="Void Covenant Hoodie" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-contain object-center opacity-80" />
               </div>
               <div className="flex justify-between items-end">
                 <div>
                   <h3 className="font-sans text-4xl mb-2 tracking-tighter">VOID COVENANT HOODIE</h3>
-                  <p className="text-sm opacity-60">COMING SOON</p>
+                  <p className="text-sm normal-case tracking-normal opacity-60">Registry preview. Final drop details pending.</p>
                 </div>
               </div>
             </div>
 
             {/* Card 3 — bottom-left: zoom OUT */}
-            <div id="product-bl" className="bg-[#0A0A0A] p-8 group transition-colors duration-200 hover:border-[#4A7C3F] border-[1.5px] border-transparent relative product-card">
+            <div id="product-bl" className="bg-[#0A0A0A] p-8 group transition-colors duration-200 hover:border-[#8B0000] border-[1.5px] border-transparent relative product-card">
               <div className="aspect-square relative mb-8 bg-[#1A1612]">
                 <Image src="/images/vs_studio_caps_1776346579559.jpg" alt="Nocturne Crown Snapback" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-contain object-center opacity-80" />
               </div>
               <div className="flex justify-between items-end">
                 <div>
                   <h3 className="font-sans text-4xl mb-2 tracking-tighter">NOCTURNE CROWN SNAPBACK</h3>
-                  <p className="text-sm opacity-60">COMING SOON</p>
+                  <p className="text-sm normal-case tracking-normal opacity-60">Registry preview. Final drop details pending.</p>
                 </div>
               </div>
             </div>
 
             {/* Card 4 — bottom-right (2-col): zoom IN */}
-            <div id="product-br" className="md:col-span-2 bg-[#0A0A0A] p-8 group transition-colors duration-200 hover:border-[#4A7C3F] border-[1.5px] border-transparent relative product-card">
+            <div id="product-br" className="md:col-span-2 bg-[#0A0A0A] p-8 group transition-colors duration-200 hover:border-[#8B0000] border-[1.5px] border-transparent relative product-card">
               <div className="aspect-[3/2] relative mb-8 bg-[#1A1612]">
                 <Image src="/images/vs_studio_jackets_1776346376867.jpg" alt="Parish Cloak Jacket" fill sizes="(max-width: 768px) 100vw, 66vw" className="object-contain object-center opacity-80" />
               </div>
               <div className="flex justify-between items-end">
                 <div>
                   <h3 className="font-sans text-5xl mb-2 tracking-tighter">PARISH CLOAK JACKET</h3>
-                  <p className="text-sm opacity-60">COMING SOON</p>
+                  <p className="text-sm normal-case tracking-normal opacity-60">Registry preview. Final drop details pending.</p>
                 </div>
               </div>
             </div>
@@ -490,9 +531,9 @@ export default function Home() {
       </section>
 
       {/* SECTION 5 — HEX VENOM USB FEATURE */}
-      <section id="usb-section" data-zoom="in" data-section-intro="green" className="bg-[#1A1612] text-[#F2EDE4] border-y-[1.5px] border-[#4A7C3F] relative z-40 overflow-hidden">
+      <section id="usb-section" data-zoom="in" data-section-intro="blood" className="bg-[#1A1612] text-[#F2EDE4] border-y-[1.5px] border-[#8B0000] relative z-40 overflow-hidden">
         <div className="section-intro-content grid grid-cols-1 md:grid-cols-12 max-w-[1600px] mx-auto min-h-[400px]">
-          <div className="md:col-span-6 lg:col-span-5 relative h-[400px] md:h-auto border-b-[1.5px] md:border-b-0 md:border-r-[1.5px] border-[#4A7C3F] overflow-hidden group">
+          <div className="md:col-span-6 lg:col-span-5 relative h-[400px] md:h-auto border-b-[1.5px] md:border-b-0 md:border-r-[1.5px] border-[#8B0000] overflow-hidden group">
             <Image
               src="/images/vs_hex_venom_usb_1776351651692.jpg"
               alt="Hex Venom USB Concept"
@@ -504,13 +545,13 @@ export default function Home() {
           </div>
           <div className="md:col-span-6 lg:col-span-7 p-12 flex flex-col justify-center from-right bg-[#1A1612]/80 backdrop-blur-sm relative z-10">
             <div className="flex items-center gap-4 mb-4">
-              <span className="bg-[#4A7C3F] text-[#F2EDE4] text-[10px] tracking-[0.2em] px-2 py-1 uppercase">Physical Drop</span>
+              <span className="bg-[#8B0000] text-[#F2EDE4] text-[10px] tracking-[0.2em] px-2 py-1 uppercase">Artifact Study</span>
               <span className="text-[#4A7C3F] text-[10px] tracking-[0.2em] font-mono">ED. 001/050</span>
             </div>
             <h2 className="font-sans text-7xl tracking-tighter mb-6 leading-none italic uppercase">HEX VENOM USB</h2>
             <div className="space-y-4 max-w-lg mb-8">
               <p className="text-lg opacity-90 leading-relaxed font-light">
-                Premium 32GB industrial-grade storage. Pre-loaded with <span className="text-[#4A7C3F]">The Unreleased Sex Tapes</span>, isolated stems, and exclusive Miami live sets.
+                Premium 32GB industrial-grade storage. Pre-loaded with <span className="text-[#F2EDE4]">The Unreleased Sex Tapes</span>, isolated stems, and exclusive Miami live sets.
               </p>
               <ul className="text-xs tracking-widest opacity-60 space-y-2 uppercase">
                 <li>• Hand-numbered & Laser Engraved</li>
@@ -518,18 +559,18 @@ export default function Home() {
                 <li>• Instant Access to High-Fidelity WAVs</li>
               </ul>
             </div>
-            <div className="flex flex-col sm:flex-row items-center gap-8 border-t border-[#4A7C3F]/30 pt-8">
+            <div className="flex flex-col sm:flex-row items-center gap-8 border-t border-[#8B0000]/40 pt-10">
               <button
                 type="button"
                 onClick={() => scrollToSection('#bloodline-section')}
-                className="bg-[#E8DCC8] text-[#1A1612] px-12 py-5 font-sans text-2xl tracking-[0.1em] hover:bg-[#4A7C3F] hover:text-[#F2EDE4] transition-all duration-300 w-full sm:w-auto uppercase italic"
+                className="min-h-[58px] bg-[#E8DCC8] text-[#1A1612] px-12 py-5 font-sans text-2xl tracking-[0.1em] hover:bg-[#8B0000] hover:text-[#F2EDE4] transition-all duration-300 w-full sm:w-auto uppercase italic"
               >
                 Join the Waitlist
               </button>
             </div>
 
             {/* USB Contents & Specs */}
-            <div className="grid grid-cols-2 gap-6 border-t border-[#4A7C3F]/30 pt-8 mt-8">
+            <div className="grid grid-cols-2 gap-6 border-t border-[#8B0000]/40 pt-8 mt-8">
               <div className="space-y-3">
                 <p className="text-[9px] tracking-[0.35em] text-[#4A7C3F] uppercase">What&apos;s Loaded</p>
                 <ul className="text-[11px] tracking-widest opacity-70 space-y-2 uppercase">
@@ -550,7 +591,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="border-t border-[#4A7C3F]/30 pt-6 mt-6 flex items-center justify-between">
+            <div className="border-t border-[#8B0000]/40 pt-6 mt-6 flex items-center justify-between">
               <span className="text-[10px] tracking-[0.3em] opacity-30 uppercase font-mono">Limited to 50 Units Worldwide</span>
               <span className="text-[10px] tracking-[0.3em] text-[#4A7C3F] uppercase">Ships Q3 2026</span>
             </div>
@@ -592,7 +633,7 @@ export default function Home() {
                 </a>
               </div>
 
-              <MediaPlayer autoPlayOnMount={autoplayDiscoPartyBaby} />
+              <MediaPlayer />
             </div>
 
             {/* Right Column: Stats & Bookings */}
@@ -763,15 +804,15 @@ export default function Home() {
         <footer className="max-w-[1600px] mx-auto">
 
           {/* Massive closing wordmark — fade in on scroll */}
-          <div className="mb-20 overflow-visible from-left" data-fade-in>
-            <h2 className="retro-footer-wordmark font-sans text-[18vw] leading-[0.82] tracking-tighter md:text-[16vw]">
+          <div className="mb-28 overflow-visible from-left" data-fade-in>
+            <h2 className="retro-footer-wordmark mx-auto flex w-full flex-col items-center font-sans text-[18vw] leading-[0.82] tracking-tighter md:text-[16vw]">
               <span className="retro-3d-word" data-text="VAMPIRE">VAMPIRE</span>
               <span className="retro-3d-word retro-3d-word-offset" data-text="SEX">SEX</span>
             </h2>
           </div>
 
           {/* Info grid */}
-          <div className="grid grid-cols-1 gap-8 border-t-[1.5px] border-[#1A1612] pt-12 mb-12 sm:grid-cols-2 md:grid-cols-4">
+          <div className="grid grid-cols-1 gap-8 border-t-[1.5px] border-[#1A1612] pt-16 mb-12 sm:grid-cols-2 md:grid-cols-4">
             <div className="space-y-3">
               <p className="text-[9px] tracking-[0.3em] opacity-40 uppercase">Label</p>
               <p className="text-sm tracking-wider">Sex Sells Records</p>
