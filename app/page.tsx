@@ -95,8 +95,8 @@ export default function Home() {
 
     document.body.style.overflow = 'hidden';
 
-    const wordmarkDelay = isMobileViewport ? 1200 : 120;
-    const detailsDelay = isMobileViewport ? 3200 : 2050;
+    const wordmarkDelay = isMobileViewport ? 160 : 120;
+    const detailsDelay = isMobileViewport ? 1450 : 2050;
     const revealWordmark = window.setTimeout(() => setHeroVisible(true), wordmarkDelay);
     const revealDetails = window.setTimeout(() => {
       setHeroDetailsVisible(true);
@@ -186,7 +186,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="bg-[#0A0A0A] min-h-screen">
+    <main className="min-h-[100dvh] bg-[#0A0A0A]">
       {!introDone && <VideoIntro onDone={completeIntro} />}
 
       <Navbar visible={introDone && (heroIntroStarted || heroDetailsVisible)} />
@@ -199,7 +199,7 @@ export default function Home() {
         className="bg-[#E8DCC8] text-[#1A1612] relative z-10"
       >
         <div className="parallax-bg bg-[#E8DCC8]"></div>
-        <div className="section-inner relative z-10 pt-32 pb-10 flex flex-col min-h-screen">
+        <div className="section-inner relative z-10 flex min-h-[100dvh] flex-col pt-32 pb-10">
 
           {/* Main Wordmark */}
           <div className="flex-grow flex flex-col justify-center items-center px-6 md:px-12 mt-12 mb-10">
