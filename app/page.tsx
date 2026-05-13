@@ -295,7 +295,7 @@ export default function Home() {
       <div id="normalize-section" className="relative z-[18] flex h-[62vh] min-h-[360px] items-center justify-center overflow-hidden bg-[#E8DCC8] py-16 text-[#1A1612] md:h-[72vh]">
         <div className="normalize-crosshair absolute inset-0 flex items-center justify-center" aria-hidden="true">
           <video
-            className="normalize-video h-full w-full object-contain opacity-80 mix-blend-multiply"
+            className="normalize-video h-full w-full object-contain opacity-90"
             src="/video/normalize-crosshair-loop.mp4"
             poster="/images/normalize-crosshair-flow.png"
             autoPlay
