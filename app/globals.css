@@ -86,12 +86,150 @@
   to { --vs-angle: 360deg; }
 }
 
+.vs-menu-disc {
+  transform-origin: center;
+  will-change: transform;
+}
+
+.group\/vs-menu:hover .vs-menu-disc,
+.group\/vs-menu:focus-visible .vs-menu-disc {
+  animation: vs-vinyl-spin 2.35s linear infinite;
+}
+
+@keyframes vs-vinyl-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .group\/vs-menu:hover .vs-menu-disc,
+  .group\/vs-menu:focus-visible .vs-menu-disc {
+    animation: none;
+  }
+}
+
+.hero-cta-button {
+  box-shadow:
+    0 1px 0 rgba(26, 22, 18, 0.85),
+    0 9px 0 rgba(26, 22, 18, 0.13),
+    0 18px 34px rgba(26, 22, 18, 0.12);
+  transform-origin: center;
+  transform-style: preserve-3d;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.hero-cta-button:hover,
+.hero-cta-button:focus-visible {
+  box-shadow:
+    0 1px 0 rgba(26, 22, 18, 0.95),
+    0 12px 0 rgba(74, 124, 63, 0.18),
+    0 26px 44px rgba(26, 22, 18, 0.18);
+  transform: translate3d(0, -3px, 0);
+}
+
+.hero-cta-button:active {
+  box-shadow:
+    0 1px 0 rgba(26, 22, 18, 0.9),
+    0 4px 0 rgba(26, 22, 18, 0.12),
+    0 10px 18px rgba(26, 22, 18, 0.12);
+  transform: translate3d(0, 2px, 0);
+}
+
+.hero-cta-sequence .hero-cta-book {
+  animation: hero-book-cue 1.65s ease-out both;
+}
+
+.hero-cta-sequence .hero-cta-listen {
+  animation: hero-cta-rise 0.92s cubic-bezier(0.2, 0.9, 0.18, 1) 1.28s both;
+}
+
+.hero-cta-sequence .hero-cta-bloodline {
+  animation: hero-cta-drop 0.92s cubic-bezier(0.2, 0.9, 0.18, 1) 1.28s both;
+}
+
+@keyframes hero-book-cue {
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+    box-shadow: none;
+  }
+  18% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: none;
+  }
+  34%, 58% {
+    background: #1A1612;
+    color: #E8DCC8;
+    box-shadow:
+      0 1px 0 rgba(26, 22, 18, 0.95),
+      0 12px 0 rgba(74, 124, 63, 0.18),
+      0 0 30px rgba(74, 124, 63, 0.22),
+      0 26px 44px rgba(26, 22, 18, 0.18);
+  }
+  46%, 70%, 100% {
+    background: transparent;
+    color: #1A1612;
+    box-shadow:
+      0 1px 0 rgba(26, 22, 18, 0.85),
+      0 9px 0 rgba(26, 22, 18, 0.13),
+      0 18px 34px rgba(26, 22, 18, 0.12);
+  }
+}
+
+@keyframes hero-cta-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 2.4rem, 0) scale(0.98);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes hero-cta-drop {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -2.4rem, 0) scale(0.98);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cta-sequence .hero-cta-book,
+  .hero-cta-sequence .hero-cta-listen,
+  .hero-cta-sequence .hero-cta-bloodline {
+    animation: none;
+  }
+}
+
 /* ─────────────────────────────────────────────
    BASE — prevent overflow bleed from scale/translate
    ───────────────────────────────────────────── */
 html {
   overflow-x: hidden;
   scroll-behavior: smooth;
+}
+
+#hero-section,
+#about-section,
+#normalize-section,
+#products-section,
+#epk-section,
+#bloodline-section {
+  scroll-margin-top: 88px;
 }
 
 /* ─────────────────────────────────────────────
@@ -167,67 +305,6 @@ html {
   z-index: 1;
 }
 
-.magnetic-mark-section::before,
-.magnetic-mark-section::after {
-  content: '';
-  position: absolute;
-  inset: 18% 10%;
-  z-index: 1;
-  pointer-events: none;
-  border-radius: 999px;
-  opacity: 0.34;
-  filter: blur(20px);
-  mix-blend-mode: screen;
-  transform: translate3d(0, 0, 0);
-}
-
-.magnetic-mark-section::before {
-  background:
-    radial-gradient(ellipse at 42% 50%, rgba(139, 0, 0, 0.28), transparent 54%),
-    linear-gradient(90deg, transparent, rgba(139, 0, 0, 0.18), transparent);
-  animation: magnetic-pull-a 4.8s ease-in-out infinite alternate;
-}
-
-.magnetic-mark-section::after {
-  inset: 28% 16%;
-  background:
-    radial-gradient(ellipse at 58% 50%, rgba(255, 26, 26, 0.12), transparent 52%),
-    linear-gradient(90deg, transparent 10%, rgba(139, 0, 0, 0.24), transparent 88%);
-  animation: magnetic-pull-b 5.6s ease-in-out infinite alternate;
-}
-
-.magnetic-mark-field {
-  background:
-    radial-gradient(circle at 50% 48%, rgba(139, 0, 0, 0.26), rgba(10, 10, 10, 0) 62%),
-    repeating-linear-gradient(90deg, rgba(139, 0, 0, 0.07) 0 1px, transparent 1px 42px),
-    #0A0A0A;
-}
-
-.magnetic-mark-logo {
-  transform-origin: center center;
-}
-
-@keyframes magnetic-mark-float {
-  from {
-    transform: translate3d(-1.2%, -1.5%, 0) rotate(-0.6deg) scale(0.985);
-    filter: contrast(1.05) saturate(0.96);
-  }
-  to {
-    transform: translate3d(1.4%, 1%, 0) rotate(0.7deg) scale(1.025);
-    filter: contrast(1.18) saturate(1.08);
-  }
-}
-
-@keyframes magnetic-pull-a {
-  from { transform: translateX(-3%) scaleX(0.92); opacity: 0.22; }
-  to { transform: translateX(3%) scaleX(1.08); opacity: 0.42; }
-}
-
-@keyframes magnetic-pull-b {
-  from { transform: translateX(4%) scaleX(1.1); opacity: 0.18; }
-  to { transform: translateX(-4%) scaleX(0.9); opacity: 0.34; }
-}
-
 /* ─────────────────────────────────────────────
    HORIZONTAL PARALLAX ELEMENTS
    Start hidden — GSAP animates opacity + x
@@ -235,6 +312,20 @@ html {
 .from-left,
 .from-right {
   will-change: transform, opacity;
+}
+
+.normalize-crosshair,
+.normalize-video {
+  max-width: 100vw;
+  overflow: hidden;
+}
+
+.drop-archive {
+  scrollbar-width: none;
+}
+
+.drop-archive::-webkit-scrollbar {
+  display: none;
 }
 
 /* ─────────────────────────────────────────────
@@ -296,6 +387,63 @@ html {
   }
 }
 
+@media (max-width: 1024px), (pointer: coarse) {
+  [data-zoom] {
+    transform: none !important;
+    will-change: auto;
+  }
+
+  [data-section-intro] {
+    transform: none !important;
+    clip-path: none !important;
+    opacity: 1 !important;
+  }
+
+  .parallax-bg {
+    transform: none !important;
+    inset: 0;
+    height: 100%;
+  }
+
+  .from-left,
+  .from-right,
+  .section-intro-content,
+  .normalize-crosshair,
+  .normalize-title {
+    transform: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+
+  .section-intro-veil,
+  .section-intro-scan,
+  .section-cinematic-overlay,
+  .section-cinematic-edge {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 4.25rem;
+  }
+
+  .drop-archive {
+    display: flex;
+    gap: 1rem;
+    margin-inline: -1.5rem;
+    overflow-x: auto;
+    padding-inline: 1.5rem;
+    scroll-padding-inline: 1.5rem;
+    scroll-snap-type: x mandatory;
+  }
+
+  .drop-card {
+    flex: 0 0 min(82vw, 330px);
+    scroll-snap-align: center;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   [data-zoom] {
     transform: none !important;
@@ -320,12 +468,6 @@ html {
   .section-intro-content {
     transform: none !important;
     opacity: 1 !important;
-  }
-  .magnetic-mark-logo,
-  .magnetic-mark-section::before,
-  .magnetic-mark-section::after {
-    animation: none !important;
-    transform: none !important;
   }
 }
 

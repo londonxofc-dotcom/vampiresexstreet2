@@ -1,11 +1,11 @@
-# Graph Report - vampire-sex-street-main  (2026-05-12)
+# Graph Report - vampire-sex-street-main  (2026-05-13)
 
 ## Corpus Check
-- 39 files · ~768,327 words
+- 40 files · ~772,998 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 128 nodes · 135 edges · 5 communities detected
+- 124 nodes · 124 edges · 5 communities detected
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
@@ -13,7 +13,7 @@
 - [[_COMMUNITY_Community 0|Community 0]]
 - [[_COMMUNITY_Community 1|Community 1]]
 - [[_COMMUNITY_Community 2|Community 2]]
-- [[_COMMUNITY_Community 3|Community 3]]
+- [[_COMMUNITY_Community 4|Community 4]]
 - [[_COMMUNITY_Community 5|Community 5]]
 
 ## God Nodes (most connected - your core abstractions)
@@ -21,12 +21,12 @@
 2. `POST()` - 8 edges
 3. `tick()` - 6 edges
 4. `isHeroActive()` - 4 edges
-5. `updateTarget()` - 4 edges
-6. `requestRender()` - 4 edges
-7. `drawLattice()` - 4 edges
-8. `getResend()` - 3 edges
-9. `escapeHtml()` - 3 edges
-10. `getClientKey()` - 3 edges
+5. `drawLattice()` - 4 edges
+6. `getResend()` - 3 edges
+7. `escapeHtml()` - 3 edges
+8. `getClientKey()` - 3 edges
+9. `isRateLimited()` - 3 edges
+10. `createNormalizeTexture()` - 3 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `POST()` --calls--> `getBoundedText()`  [EXTRACTED]
@@ -45,12 +45,12 @@ Cohesion: 0.23
 Nodes (14): initAboutSection(), initBlobScroll(), initEditorialFlipOut(), initHeroFade(), initHorizontalParallax(), initProductCards(), initResizeHandler(), initScrollAnimations() (+6 more)
 
 ### Community 2 - "Community 2"
-Cohesion: 0.27
-Nodes (9): hideOnForwardScroll(), hideOnTouchScroll(), isHeroActive(), onPointerLeave(), onPointerMove(), onScroll(), requestRender(), updateContactVisibility() (+1 more)
-
-### Community 3 - "Community 3"
 Cohesion: 0.5
 Nodes (7): escapeHtml(), getBoundedText(), getClientKey(), getResend(), isRateLimited(), parseOfferAmount(), POST()
+
+### Community 4 - "Community 4"
+Cohesion: 0.43
+Nodes (4): hideOnForwardScroll(), hideOnTouchScroll(), isHeroActive(), updateContactVisibility()
 
 ### Community 5 - "Community 5"
 Cohesion: 0.38

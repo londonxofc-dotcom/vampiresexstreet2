@@ -75,7 +75,7 @@ export default function CrimsonHeader() {
     <h2
       ref={h2Ref}
       data-crimson-header
-      className="font-sans text-6xl md:text-8xl mb-12 tracking-tighter cursor-default select-none"
+      className="mb-8 max-w-5xl font-sans text-[18vw] leading-[0.82] tracking-tighter cursor-default select-none sm:text-7xl md:mb-12 md:text-8xl"
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
     >

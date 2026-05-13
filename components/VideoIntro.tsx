@@ -11,6 +11,7 @@ export default function VideoIntro({ onDone }: VideoIntroProps) {
   const doneRef = useRef(false);
   const exitTimerRef = useRef<number | null>(null);
   const [exiting, setExiting] = useState(false);
+  const [playbackBlocked, setPlaybackBlocked] = useState(false);
 
   const finish = useCallback(() => {
     if (doneRef.current) return;
@@ -19,13 +20,28 @@ export default function VideoIntro({ onDone }: VideoIntroProps) {
     exitTimerRef.current = window.setTimeout(onDone, 620);
   }, [onDone]);
 
+  const attemptPlay = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || doneRef.current) return;
+
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+
+    video.play()
+      .then(() => setPlaybackBlocked(false))
+      .catch(() => setPlaybackBlocked(true));
+  }, []);
+
   useEffect(() => {
-    const timeout = window.setTimeout(finish, 9000);
-    const playFrame = window.requestAnimationFrame(() => {
-      videoRef.current?.play().catch(() => {
-        // Muted autoplay is usually allowed, but keep manual entry available.
-      });
-    });
+    const timeout = window.setTimeout(() => {
+      const video = videoRef.current;
+      if (!video || video.currentTime < 0.5) setPlaybackBlocked(true);
+    }, 3500);
+    const playFrame = window.requestAnimationFrame(attemptPlay);
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
         finish();
@@ -39,29 +55,40 @@ export default function VideoIntro({ onDone }: VideoIntroProps) {
       window.cancelAnimationFrame(playFrame);
       if (exitTimerRef.current) window.clearTimeout(exitTimerRef.current);
     };
-  }, [finish]);
+  }, [attemptPlay, finish]);
 
   return (
     <div
-      className={`fixed inset-0 z-[500] flex min-h-[100dvh] items-center justify-center overflow-hidden transition-colors duration-700 ${
+      className={`fixed inset-0 z-[500] flex h-[100svh] min-h-[100dvh] items-center justify-center overflow-hidden transition-colors duration-700 ${
         exiting ? 'bg-[#E8DCC8]' : 'bg-black'
       }`}
       role="dialog"
       aria-label="Vampire Sex intro"
-      onClick={finish}
     >
       <video
         ref={videoRef}
-        className={`h-full w-full object-cover transition-opacity duration-500 md:object-contain ${
+        className={`h-auto max-h-[100svh] w-full object-contain object-center transition-opacity duration-500 ${
           exiting ? 'opacity-0' : 'opacity-100'
         }`}
         autoPlay
         muted
         playsInline
         preload="auto"
+        disablePictureInPicture
+        controls={false}
+        onCanPlay={attemptPlay}
         onEnded={finish}
         onError={finish}
+        onClick={(event) => {
+          event.stopPropagation();
+          attemptPlay();
+        }}
+        onPointerDown={(event) => {
+          event.stopPropagation();
+          attemptPlay();
+        }}
       >
+        <source src="/video/vssloading-mobile.mp4" type="video/mp4" media="(max-width: 767px)" />
         <source src="/video/vssloading.mp4" type="video/mp4" />
       </video>
 
@@ -71,7 +98,7 @@ export default function VideoIntro({ onDone }: VideoIntroProps) {
           event.stopPropagation();
           finish();
         }}
-        className={`absolute right-5 top-[calc(env(safe-area-inset-top)+1.25rem)] border border-[#E8DCC8]/30 bg-black/55 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.24em] text-[#E8DCC8]/70 backdrop-blur transition-all duration-300 hover:border-[#E8DCC8] hover:text-[#E8DCC8] ${
+        className={`absolute right-5 top-[calc(env(safe-area-inset-top)+1.25rem)] min-h-11 border border-[#E8DCC8]/30 bg-black/55 px-4 py-3 font-mono text-[10px] uppercase tracking-[0.24em] text-[#E8DCC8]/70 backdrop-blur transition-all duration-300 hover:border-[#E8DCC8] hover:text-[#E8DCC8] ${
           exiting ? 'opacity-0 blur-sm' : 'opacity-100 blur-0'
         }`}
       >
@@ -84,18 +111,26 @@ export default function VideoIntro({ onDone }: VideoIntroProps) {
           event.stopPropagation();
           finish();
         }}
-        className={`absolute bottom-[calc(env(safe-area-inset-bottom)+2rem)] left-1/2 min-h-[52px] w-[min(82vw,320px)] -translate-x-1/2 border-[1.5px] border-[#E8DCC8] bg-[#E8DCC8] px-7 py-4 font-sans text-xl uppercase tracking-[0.16em] text-[#1A1612] shadow-[0_0_46px_rgba(232,220,200,0.22)] transition-all duration-300 hover:bg-[#8B0000] hover:text-[#F2EDE4] md:bottom-10 md:w-auto md:text-2xl ${
+        className={`absolute bottom-[calc(env(safe-area-inset-bottom)+1.15rem)] left-1/2 min-h-11 -translate-x-1/2 bg-transparent px-4 py-3 font-mono text-[10px] uppercase tracking-[0.36em] text-[#E8DCC8]/72 underline decoration-[#E8DCC8]/24 underline-offset-[6px] transition-all duration-300 hover:text-[#E8DCC8] hover:decoration-[#E8DCC8]/70 md:bottom-7 ${
           exiting ? 'translate-y-2 opacity-0 blur-sm' : 'opacity-100 blur-0'
         }`}
       >
-        Enter Site
+        Enter
       </button>
 
-      <p className={`pointer-events-none absolute bottom-[calc(env(safe-area-inset-bottom)+0.75rem)] left-1/2 w-full -translate-x-1/2 px-6 text-center font-mono text-[9px] uppercase tracking-[0.28em] text-[#E8DCC8]/45 transition-opacity duration-300 md:bottom-4 ${
-        exiting ? 'opacity-0' : 'opacity-100'
-      }`}>
-        Tap anywhere / Enter / Esc
-      </p>
+      {playbackBlocked && !exiting && (
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation();
+            attemptPlay();
+          }}
+          className="absolute left-1/2 top-1/2 w-[min(78vw,300px)] -translate-x-1/2 -translate-y-1/2 border-[1.5px] border-[#E8DCC8] bg-black/68 px-6 py-4 font-sans text-xl uppercase tracking-[0.16em] text-[#E8DCC8] backdrop-blur transition-colors hover:bg-[#E8DCC8] hover:text-[#1A1612]"
+        >
+          Play Intro
+        </button>
+      )}
+
     </div>
   );
 }

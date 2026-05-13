@@ -43,7 +43,7 @@ export default function SoundToggle({ visible = true }: { visible?: boolean }) {
       onClick={toggleSound}
       aria-pressed={muted}
       aria-label={muted ? 'Turn sound on' : 'Mute site sound'}
-      className="fixed bottom-5 right-5 z-[210] border-[1.5px] border-[#8B0000]/65 bg-[#0A0A0A]/78 px-4 py-3 font-mono text-[10px] uppercase tracking-[0.22em] text-[#F2EDE4] shadow-[0_0_34px_rgba(139,0,0,0.24)] backdrop-blur transition-colors hover:bg-[#8B0000] md:bottom-6 md:right-6"
+      className="fixed bottom-20 right-5 z-[210] min-h-11 border-[1.5px] border-[#8B0000]/65 bg-[#0A0A0A]/78 px-4 py-3 font-mono text-[10px] uppercase tracking-[0.22em] text-[#F2EDE4] shadow-[0_0_34px_rgba(139,0,0,0.24)] backdrop-blur transition-colors hover:bg-[#8B0000] md:bottom-6 md:right-6"
     >
       Sound {muted ? 'Off' : 'On'}
     </button>

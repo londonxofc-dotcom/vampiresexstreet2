@@ -1,14 +1,14 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import gsap from 'gsap';
 
 const NAV_ITEMS = [
-  { label: 'SHOP',      href: '#products-section'  },
-  { label: 'ABOUT',     href: '#about-section'     },
-  { label: 'LISTEN',    href: '#epk-section'       },
-  { label: 'BOOK',      href: '#epk-section'       },
-  { label: 'BLOODLINE', href: '#bloodline-section' },
+  { label: 'HOME',   href: '#hero-section'      },
+  { label: 'PROOF',  href: '#about-section'     },
+  { label: 'DROPS',  href: '#products-section'  },
+  { label: 'LISTEN', href: '#epk-section'       },
+  { label: 'ACCESS', href: '#bloodline-section' },
 ];
 
 type NavbarProps = {
@@ -16,12 +16,11 @@ type NavbarProps = {
 };
 
 export default function Navbar({ visible = true }: NavbarProps) {
-  const badgeRef = useRef<HTMLButtonElement | null>(null);
   const [open, setOpen] = useState(false);
   const [contactHidden, setContactHidden] = useState(false);
   const [heroInView, setHeroInView] = useState(true);
   const isMenuOpen = visible && open;
-  const chromeVisible = visible && (heroInView || isMenuOpen);
+  const chromeVisible = visible;
   const contactVisible = chromeVisible && heroInView && !contactHidden;
 
   useEffect(() => {
@@ -66,91 +65,6 @@ export default function Navbar({ visible = true }: NavbarProps) {
     };
   }, []);
 
-  useEffect(() => {
-    const badge = badgeRef.current;
-    if (!badge) return;
-
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const coarsePointer = window.matchMedia('(pointer: coarse)');
-    if (reduceMotion.matches || coarsePointer.matches) return;
-
-    let frame = 0;
-    const pointer = { x: 0, y: 0 };
-    const target = { x: 0, y: 0, rx: 0, ry: 0 };
-    const current = { x: 0, y: 0, rx: 0, ry: 0 };
-
-    const updateTarget = () => {
-      const scroll = window.scrollY || document.documentElement.scrollTop || 0;
-      const scrollX = Math.sin(scroll * 0.012) * 4;
-      const scrollY = Math.min(9, scroll * 0.026);
-
-      // Cross-axis pull: pointer Y affects X, pointer X affects Y.
-      target.x = scrollX + pointer.y * 5;
-      target.y = scrollY + pointer.x * 5;
-      target.rx = -pointer.x * 5;
-      target.ry = pointer.y * 6;
-    };
-
-    const render = () => {
-      frame = 0;
-      current.x += (target.x - current.x) * 0.1;
-      current.y += (target.y - current.y) * 0.1;
-      current.rx += (target.rx - current.rx) * 0.1;
-      current.ry += (target.ry - current.ry) * 0.1;
-
-      badge.style.transform = [
-        `translate3d(${current.x.toFixed(2)}px, ${current.y.toFixed(2)}px, 0)`,
-        `rotateX(${current.rx.toFixed(2)}deg)`,
-        `rotateY(${current.ry.toFixed(2)}deg)`,
-      ].join(' ');
-
-      if (
-        Math.abs(target.x - current.x) > 0.05 ||
-        Math.abs(target.y - current.y) > 0.05 ||
-        Math.abs(target.rx - current.rx) > 0.05 ||
-        Math.abs(target.ry - current.ry) > 0.05
-      ) {
-        frame = window.requestAnimationFrame(render);
-      }
-    };
-
-    const requestRender = () => {
-      if (!frame) frame = window.requestAnimationFrame(render);
-    };
-
-    const onPointerMove = (event: PointerEvent) => {
-      pointer.x = (event.clientX / Math.max(1, window.innerWidth) - 0.5) * 2;
-      pointer.y = (event.clientY / Math.max(1, window.innerHeight) - 0.5) * 2;
-      updateTarget();
-      requestRender();
-    };
-
-    const onScroll = () => {
-      updateTarget();
-      requestRender();
-    };
-
-    const onPointerLeave = () => {
-      pointer.x = 0;
-      pointer.y = 0;
-      updateTarget();
-      requestRender();
-    };
-
-    updateTarget();
-    window.addEventListener('pointermove', onPointerMove, { passive: true });
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('pointerleave', onPointerLeave, { passive: true });
-
-    return () => {
-      window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('pointerleave', onPointerLeave);
-      if (frame) window.cancelAnimationFrame(frame);
-      badge.style.transform = '';
-    };
-  }, []);
-
   // Lock body scroll when menu is open
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? 'hidden' : '';
@@ -186,21 +100,17 @@ export default function Navbar({ visible = true }: NavbarProps) {
 
         {/* VS Button — nav toggle */}
         <button
-          ref={badgeRef}
           type="button"
           aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           onClick={() => {
             if (chromeVisible) setOpen(v => !v);
           }}
-          className={`relative flex h-14 w-14 shrink-0 aspect-square items-center justify-center focus:outline-none will-change-transform [transform-style:preserve-3d] [perspective:700px] md:h-16 md:w-16 ${chromeVisible ? 'pointer-events-auto' : 'pointer-events-none'}`}
+          className={`group/vs-menu relative flex h-14 w-14 shrink-0 aspect-square items-center justify-center focus:outline-none md:h-16 md:w-16 ${chromeVisible ? 'pointer-events-auto' : 'pointer-events-none'}`}
         >
-          {/* Orbital glow ring */}
-          <div className="vs-glow-ring" />
-
           {/* Badge */}
-          <div className="relative aspect-square h-full w-full rounded-full border-[1.5px] border-[#1A1612] bg-[#E8DCC8] flex items-center justify-center transition-colors duration-300 hover:bg-[#1A1612] group animate-[spin_8s_linear_infinite]">
+          <div className="vs-menu-disc relative aspect-square h-full w-full rounded-full border-[1.5px] border-[#1A1612] bg-[#E8DCC8] flex items-center justify-center transition-colors duration-300 group-hover/vs-menu:bg-[#1A1612] group-focus-visible/vs-menu:bg-[#1A1612]">
             <span
-              className="font-sans text-2xl tracking-tighter leading-none mt-1 text-[#1A1612] group-hover:text-[#E8DCC8] transition-colors duration-300"
+              className="font-sans text-2xl tracking-tighter leading-none mt-1 text-[#1A1612] group-hover/vs-menu:text-[#E8DCC8] group-focus-visible/vs-menu:text-[#E8DCC8] transition-colors duration-300"
               style={{ fontSize: isMenuOpen ? '1rem' : undefined }}
             >
               {isMenuOpen ? '×' : 'VS'}
@@ -219,14 +129,14 @@ export default function Navbar({ visible = true }: NavbarProps) {
           }}
         >
           <div className="text-right">
-            <p className="text-xs text-[#1A1612]/60 mb-1 mix-blend-exclusion text-white/60">Bookings / Press</p>
+            <p className="text-xs text-[#1A1612]/65 mb-1">Bookings / Press</p>
             <a
               href="mailto:vampiresexworldwide@gmail.com"
-              className="block text-[11px] hover:text-[#4A7C3F] transition-colors underline underline-offset-4 text-[#1A1612] mix-blend-exclusion text-white sm:text-sm"
+              className="block text-[11px] text-[#1A1612] hover:text-[#4A7C3F] transition-colors underline underline-offset-4 sm:text-sm"
             >
               vampiresexworldwide@gmail.com
             </a>
-            <div className="mt-2 hidden md:flex justify-end gap-4 text-[10px] tracking-[0.25em] uppercase mix-blend-exclusion text-white/65">
+            <div className="mt-2 hidden md:flex justify-end gap-4 text-[10px] tracking-[0.25em] uppercase text-[#1A1612]/65">
               <button type="button" onClick={() => handleNav('#epk-section')} className="hover:text-[#4A7C3F] transition-colors">
                 Listen
               </button>
@@ -235,7 +145,7 @@ export default function Navbar({ visible = true }: NavbarProps) {
               </button>
             </div>
           </div>
-          <div className="hidden gap-1 text-[#1A1612]/40 mix-blend-exclusion text-white/40 sm:flex">
+          <div className="hidden gap-1 text-[#1A1612]/40 sm:flex">
             {[0,1,2,3].map(i => <span key={i} className="text-xl leading-none">|</span>)}
           </div>
         </div>

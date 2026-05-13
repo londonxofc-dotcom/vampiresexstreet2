@@ -11,7 +11,7 @@ function shouldUseReducedScroll() {
   if (typeof window === 'undefined') return true;
   return (
     window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-    window.matchMedia('(max-width: 767px)').matches ||
+    window.matchMedia('(max-width: 1024px)').matches ||
     window.matchMedia('(pointer: coarse)').matches
   );
 }
@@ -21,13 +21,13 @@ function shouldUseReducedScroll() {
 // ─────────────────────────────────────────────
 const CONFIG = {
   zoom: {
-    inFrom:    0.93,   // zoom-in starting scale
-    outFrom:   1.07,   // zoom-out starting scale
-    scrub:     1.05,   // scrub smoothness (higher = heavier)
+    inFrom:    0.97,   // zoom-in starting scale
+    outFrom:   1.03,   // zoom-out starting scale
+    scrub:     1.35,   // scrub smoothness (higher = heavier)
     ease:      'none', // scrub handles easing
   },
   overlap: {
-    yOffset:   '-5vh', // how much sections overlap each other
+    yOffset:   '-2vh', // how much sections overlap each other
     zIndexBase: 20,    // must stay above blob (z-15) and hero (z-10)
   },
   parallax: {
@@ -37,16 +37,16 @@ const CONFIG = {
       scrub:  1.55,
     },
     horizontal: {
-      distance: 120,   // px — how far .from-left / .from-right start
-      scrub:    1.2,
+      distance: 72,    // px — how far .from-left / .from-right start
+      scrub:    1.55,
     },
   },
   intro: {
-    lift: 40,
-    sectionLift: 34,
-    scrub: 1.25,
-    overlap: '-10vh',
-    compactOverlap: '-2vh',
+    lift: 20,
+    sectionLift: 16,
+    scrub: 1.65,
+    overlap: '-4vh',
+    compactOverlap: '0vh',
   },
 };
 
@@ -109,7 +109,7 @@ function initSectionZoom() {
 // positioning via CSS sticky + initBlobScroll.
 // ─────────────────────────────────────────────
 function initSectionOverlap() {
-  const sections = gsap.utils.toArray<HTMLElement>('[data-zoom]:not([data-section-intro]):not(#blob-section):not(#about-section):not(#magnetic-mark-section)');
+  const sections = gsap.utils.toArray<HTMLElement>('[data-zoom]:not([data-section-intro]):not(#blob-section):not(#about-section)');
 
   sections.forEach((section, i) => {
     // skip first section — nothing to overlap into
@@ -309,7 +309,7 @@ function initSectionIntros() {
         linear-gradient(180deg, ${colors.shadow} 0%, rgba(0, 0, 0, 0) 18%, rgba(0, 0, 0, 0) 76%, ${colors.shadow} 100%),
         radial-gradient(circle at 50% 0%, ${colors.line}24 0%, rgba(0, 0, 0, 0) 42%)
       `,
-      opacity: isCompact ? 0.28 : 0.48,
+      opacity: isCompact ? 0.16 : 0.24,
       willChange: 'opacity, transform',
     });
 
@@ -349,11 +349,11 @@ function initSectionIntros() {
       background: colors.line,
       transformOrigin: 'left center',
       willChange: 'transform, opacity',
-      opacity: 0.8,
+      opacity: 0.52,
     });
 
-    const start = isCompact ? 'top 92%' : 'top 88%';
-    const end = isCompact ? 'top 64%' : 'top 18%';
+    const start = isCompact ? 'top 94%' : 'top 92%';
+    const end = isCompact ? 'top 72%' : 'top 34%';
     const lift = isCompact ? 10 : CONFIG.intro.lift;
     const sectionLift = isCompact ? 8 : CONFIG.intro.sectionLift;
 
@@ -372,8 +372,8 @@ function initSectionIntros() {
       {
         yPercent: sectionLift,
         scale: isCompact ? 1 : 0.972,
-        clipPath: isCompact ? 'inset(0% 0% 0% 0%)' : 'inset(14% 0% 0% 0%)',
-        opacity: isCompact ? 1 : 0.9,
+        clipPath: isCompact ? 'inset(0% 0% 0% 0%)' : 'inset(5% 0% 0% 0%)',
+        opacity: isCompact ? 1 : 0.98,
       },
       {
         yPercent: 0,
@@ -388,37 +388,37 @@ function initSectionIntros() {
 
     tl.fromTo(
       overlay,
-      { opacity: isCompact ? 0.18 : 0.72, y: isCompact ? 0 : -18 },
-      { opacity: isCompact ? 0.28 : 0.42, y: 0, ease: 'none', duration: 1 },
+      { opacity: isCompact ? 0.12 : 0.28, y: isCompact ? 0 : -8 },
+      { opacity: isCompact ? 0.16 : 0.16, y: 0, ease: 'none', duration: 1 },
       0,
     );
 
     tl.fromTo(
       edge,
       { scaleX: 0.15, opacity: 0 },
-      { scaleX: 1, opacity: isCompact ? 0.55 : 0.75, ease: 'none', duration: 0.35 },
+      { scaleX: 1, opacity: isCompact ? 0.42 : 0.48, ease: 'none', duration: 0.35 },
       0,
-    ).to(edge, { opacity: isCompact ? 0.42 : 0.28, ease: 'none', duration: 0.35 }, 0.65);
+    ).to(edge, { opacity: isCompact ? 0.28 : 0.18, ease: 'none', duration: 0.35 }, 0.65);
 
     tl.fromTo(
       veil,
-      { yPercent: 0, opacity: isCompact ? 0.75 : 1 },
-      { yPercent: -112, opacity: 0.92, ease: 'none', duration: 0.82 },
+      { yPercent: 0, opacity: isCompact ? 0.28 : 0.42 },
+      { yPercent: -112, opacity: 0, ease: 'none', duration: 0.62 },
       0.02,
     );
 
     tl.fromTo(
       scan,
       { scaleX: 0, y: 0, opacity: 0 },
-      { scaleX: 1, y: isCompact ? 14 : 72, opacity: 1, ease: 'none', duration: 0.42 },
+      { scaleX: 1, y: isCompact ? 10 : 44, opacity: 0.72, ease: 'none', duration: 0.36 },
       0.05,
-    ).to(scan, { opacity: 0, ease: 'none', duration: 0.28 }, 0.68);
+    ).to(scan, { opacity: 0, ease: 'none', duration: 0.28 }, 0.56);
 
     if (content) {
       gsap.set(content, { willChange: 'transform, opacity' });
       tl.fromTo(
         content,
-        { y: lift, opacity: isCompact ? 0.8 : 0.62 },
+        { y: lift, opacity: isCompact ? 0.92 : 0.84 },
         { y: 0, opacity: 1, scale: 1, ease: 'none', duration: 1 },
         0.1,
       );
@@ -508,7 +508,7 @@ function initProductCards() {
     const el = document.querySelector<HTMLElement>(sel);
     if (!el) return;
     gsap.fromTo(el,
-      { scale: 0.86, opacity: 0 },
+      { scale: 0.94, opacity: 0.72 },
       {
         scale: 1, opacity: 1,
         duration: 1.15,
@@ -528,7 +528,7 @@ function initProductCards() {
     const el = document.querySelector<HTMLElement>(sel);
     if (!el) return;
     gsap.fromTo(el,
-      { scale: 1.14, opacity: 0 },
+      { scale: 1.04, opacity: 0.72 },
       {
         scale: 1, opacity: 1,
         duration: 1.15,
@@ -707,59 +707,59 @@ function initSectionPins() {
     };
   }
 
-  const magneticMark = document.querySelector<HTMLElement>('#magnetic-mark-section');
-  const magneticLogo = magneticMark?.querySelector<HTMLElement>('.magnetic-mark-logo');
-  if (magneticMark && magneticLogo) {
-    gsap.set(magneticMark, {
-      position: 'relative',
-      zIndex: 24,
-      marginTop: 0,
-      willChange: 'transform',
-    });
-
-    gsap.set(magneticLogo, {
-      opacity: 0,
-      scale: 0.88,
-      y: '4vh',
-      transformOrigin: 'center center',
-      willChange: 'transform, opacity, filter',
-    });
-
-    gsap.timeline({
-      scrollTrigger: {
-        trigger: magneticMark,
-        start: 'top 92%',
-        end: 'top 24%',
-        scrub: 1.1,
-        invalidateOnRefresh: true,
-      },
-    }).to(magneticLogo, {
-      opacity: 0.62,
-      scale: 1,
-      y: '0vh',
-      filter: 'blur(0px) saturate(1.05)',
-      ease: 'none',
-      duration: 1,
-    });
-
-    ScrollTrigger.create({
-      trigger: magneticMark,
-      start: 'top top',
-      end: '+=140%',
-      pin: true,
-      pinSpacing: true,
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
-    });
-  }
-
   const normalize = document.querySelector<HTMLElement>('#normalize-section');
   if (normalize) {
+    const normalizeCrosshair = normalize.querySelector<HTMLElement>('.normalize-crosshair');
+    const normalizeTitle = normalize.querySelector<HTMLElement>('.normalize-title');
+
     gsap.set(normalize, {
       position: 'relative',
       zIndex: 40,
       marginTop: '-55vh',
     });
+
+    gsap.set(normalizeCrosshair, {
+      opacity: 0.72,
+      scale: 1.04,
+      transformOrigin: 'center center',
+      willChange: 'transform, opacity',
+    });
+    if (normalizeTitle) {
+      gsap.set(normalizeTitle, {
+        scale: 0.96,
+        opacity: 0,
+        filter: 'blur(1.5px)',
+        transformOrigin: 'center center',
+        willChange: 'transform, opacity, filter',
+      });
+    }
+
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: normalize,
+        start: 'top 78%',
+        end: 'top 12%',
+        scrub: 0.9,
+        invalidateOnRefresh: true,
+      },
+    })
+      .to(normalizeCrosshair, { opacity: 1, scale: 1, ease: 'none', duration: 1 }, 0);
+
+    if (normalizeTitle) {
+      gsap.to(normalizeTitle, {
+        opacity: 1,
+        scale: 1,
+        filter: 'blur(0px)',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: normalize,
+          start: 'top 78%',
+          end: 'top 12%',
+          scrub: 0.9,
+          invalidateOnRefresh: true,
+        },
+      });
+    }
 
     ScrollTrigger.create({
       trigger: normalize,
@@ -777,7 +777,7 @@ function initSectionPins() {
     gsap.set(products, {
       position: 'relative',
       zIndex: 72,
-      marginTop: '-42vh',
+      marginTop: '-18vh',
     });
 
     ScrollTrigger.create({
@@ -894,19 +894,20 @@ function initHeroFade() {
 export function initScrollAnimations() {
   // Kill any existing triggers before re-init (useful in React)
   ScrollTrigger.getAll().forEach(t => t.kill());
+  const reducedScroll = shouldUseReducedScroll();
 
-  initSectionZoom();
-  initSectionOverlap();
-  initVerticalParallax();
-  initSectionIntros();
-  initHorizontalParallax();
-  initHeroFade();
-  initAboutSection();
-  initProductCards();
-  initBlobScroll();
-  if (!shouldUseReducedScroll()) {
+  if (!reducedScroll) {
+    initSectionZoom();
+    initSectionOverlap();
+    initVerticalParallax();
+    initSectionIntros();
+    initHorizontalParallax();
+    initHeroFade();
+    initBlobScroll();
     initSectionPins();
+    initProductCards();
   }
+  initAboutSection();
   initEditorialFlipOut();
   initResizeHandler();
 
@@ -920,7 +921,7 @@ export function initScrollAnimations() {
 export function cleanupScrollAnimations() {
   ScrollTrigger.getAll().forEach(t => t.kill());
   document.querySelectorAll('.section-intro-veil, .section-intro-scan, .section-cinematic-overlay, .section-cinematic-edge').forEach(el => el.remove());
-  gsap.set('[data-zoom], [data-section-intro], .section-intro-content, .parallax-bg, .from-left, .from-right, .section-cinematic-overlay, .section-cinematic-edge, #blob-section, #blob-anchor, #hero-section .section-inner, #normalize-section, #magnetic-mark-section, .magnetic-mark-logo, #about-section, #about-vline, #about-hline, .about-quad, .product-card, [data-crimson-header], #editorial-block, #bloodline-ghost, #bloodline-content, .bloodline-line', {
+  gsap.set('[data-zoom], [data-section-intro], .section-intro-content, .parallax-bg, .from-left, .from-right, .section-cinematic-overlay, .section-cinematic-edge, #blob-section, #blob-anchor, #hero-section .section-inner, #normalize-section, .normalize-crosshair, .normalize-title, .normalize-scanline, .normalize-ring, .normalize-spoke, .normalize-axis, .normalize-grid, .normalize-glow, #about-section, #about-vline, #about-hline, .about-quad, .product-card, [data-crimson-header], #editorial-block, #bloodline-ghost, #bloodline-content, .bloodline-line', {
     clearProps: 'all'
   });
   // Remove resize listener

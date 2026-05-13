@@ -153,7 +153,7 @@ export function MediaPlayer({ autoPlayOnMount = false }: { autoPlayOnMount?: boo
           </div>
         </div>
         <div className="flex items-center gap-4 self-end">
-          <button onClick={handlePrev} className="p-2 -m-2 hover:text-[#8B0000] transition-colors" aria-label="Previous track">
+          <button onClick={handlePrev} className="flex h-12 w-12 items-center justify-center hover:text-[#8B0000] transition-colors" aria-label="Previous track">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <polygon points="19 20 9 12 19 4 19 20"></polygon>
               <line x1="5" y1="19" x2="5" y2="5"></line>
@@ -174,7 +174,7 @@ export function MediaPlayer({ autoPlayOnMount = false }: { autoPlayOnMount?: boo
               </svg>
             )}
           </button>
-          <button onClick={handleNext} className="p-2 -m-2 hover:text-[#8B0000] transition-colors" aria-label="Next track">
+          <button onClick={handleNext} className="flex h-12 w-12 items-center justify-center hover:text-[#8B0000] transition-colors" aria-label="Next track">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <polygon points="5 4 15 12 5 20 5 4"></polygon>
               <line x1="19" y1="5" x2="19" y2="19"></line>

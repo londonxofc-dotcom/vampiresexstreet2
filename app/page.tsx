@@ -3,33 +3,26 @@
 import { useScrollAnimations } from '@/hooks/useScrollAnimations';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import CrimsonHeader from '@/components/CrimsonHeader';
 import GlobeSymbol from '@/components/GlobeSymbol';
 import TypewriterText from '@/components/TypewriterText';
-import SplitFlapText, { SplitFlapHandle } from '@/components/SplitFlapText';
 import TextScramble from '@/components/TextScramble';
 import Navbar from '@/components/Navbar';
-import { StatCounter } from '@/components/StatCounter';
 import { MediaPlayer } from '@/components/MediaPlayer';
 import VideoIntro from '@/components/VideoIntro';
 import SoundToggle from '@/components/SoundToggle';
+import SectionNav from '@/components/SectionNav';
 
 export default function Home() {
-  const splitFlapRef = useRef<SplitFlapHandle>(null);
   const [introDone, setIntroDone] = useState(false);
 
   useEffect(() => {
-    const forceIntro = new URLSearchParams(window.location.search).has('intro');
+    const params = new URLSearchParams(window.location.search);
+    const forceIntro = params.has('intro') || params.has('fresh');
     if (!forceIntro && window.sessionStorage.getItem('vss-video-intro-seen') === 'true') {
       setIntroDone(true);
     }
-  }, []);
-
-  // Expose split-flap ref to vanilla JS scroll system
-  useEffect(() => {
-    (window as any).__splitFlapRef = splitFlapRef;
-    return () => { delete (window as any).__splitFlapRef; };
   }, []);
 
   const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
@@ -185,11 +178,15 @@ export default function Home() {
     }
   }, []);
 
+  const lightCtaClass = 'min-h-[54px] border-[1.5px] border-[#1A1612] bg-transparent px-7 py-4 text-center font-sans text-xl tracking-[0.12em] uppercase text-[#1A1612] transition-colors hover:border-[#4A7C3F] hover:bg-[#4A7C3F] hover:text-[#F2EDE4]';
+  const darkCtaClass = 'min-h-[52px] border-[1.5px] border-[#4A7C3F] bg-transparent px-5 py-4 text-center font-sans text-xl uppercase tracking-[0.14em] text-[#F2EDE4] transition-colors hover:bg-[#4A7C3F] hover:text-[#F2EDE4]';
+
   return (
     <main className="min-h-[100dvh] bg-[#0A0A0A]">
       {!introDone && <VideoIntro onDone={completeIntro} />}
 
       <Navbar visible={introDone && (heroIntroStarted || heroDetailsVisible)} />
+      <SectionNav visible={introDone && heroDetailsVisible} />
       <SoundToggle visible={introDone} />
 
       {/* SECTION 1 — HERO */}
@@ -216,30 +213,31 @@ export default function Home() {
 
             <div
               id="hero-proof-panel"
-              className={`mt-10 flex w-full max-w-4xl flex-col justify-center gap-3 transition-all duration-700 sm:flex-row ${
-                heroDetailsVisible ? 'translate-y-0 opacity-100 blur-0' : 'translate-y-4 opacity-0 blur-[2px]'
+              className={`mt-10 flex w-full max-w-4xl flex-col justify-center gap-3 transition-all duration-500 sm:flex-row ${
+                heroDetailsVisible ? 'hero-cta-sequence translate-y-0 opacity-100 blur-0' : 'translate-y-4 opacity-0 blur-[2px]'
               }`}
             >
               <button
                 type="button"
                 onClick={() => scrollToSection('#epk-section')}
-                className="min-h-[54px] bg-[#1A1612] px-7 py-4 text-[#F2EDE4] font-sans text-xl tracking-[0.12em] uppercase transition-colors hover:bg-[#8B0000]"
+                className={`${lightCtaClass} hero-cta-button hero-cta-listen`}
               >
-                Listen + Press
+                Listen
               </button>
               <button
                 type="button"
                 onClick={() => setIsOfferModalOpen(true)}
-                className="min-h-[54px] border-[1.5px] border-[#1A1612] px-7 py-4 font-sans text-xl tracking-[0.12em] uppercase transition-colors hover:border-[#8B0000] hover:text-[#8B0000]"
+                className={`${lightCtaClass} hero-cta-button hero-cta-book`}
               >
-                Book Now
+                Book
               </button>
-              <Link
-                href="/epk"
-                className="min-h-[54px] border-[1.5px] border-[#1A1612]/30 px-7 py-4 text-center font-sans text-xl tracking-[0.12em] uppercase transition-colors hover:border-[#8B0000] hover:bg-[#8B0000] hover:text-[#F2EDE4]"
+              <button
+                type="button"
+                onClick={() => scrollToSection('#bloodline-section')}
+                className={`${lightCtaClass} hero-cta-button hero-cta-bloodline`}
               >
-                One-Sheet
-              </Link>
+                Join Bloodline
+              </button>
             </div>
           </div>
         </div>
@@ -250,7 +248,7 @@ export default function Home() {
         id="identity-stripe"
         data-zoom="neutral"
         data-compact
-        className="relative z-[16] border-y-[1.5px] border-[#1A1612] bg-[#8B0000] px-6 py-3 text-[#F2EDE4] md:px-12"
+        className="relative z-[16] border-y-[1.5px] border-[#1A1612] bg-[#4A7C3F] px-6 py-3 text-[#F2EDE4] md:px-12"
       >
         <div className="mx-auto flex max-w-[1600px] flex-col items-center justify-center gap-1 text-center sm:flex-row sm:justify-between">
           <span className="text-[10px] tracking-[0.34em] uppercase">Underground Music</span>
@@ -293,88 +291,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION 3 — MYTH / VISUAL INTERLUDE */}
-      <section
-        id="magnetic-mark-section"
-        data-zoom="neutral"
-        data-compact
-        className="magnetic-mark-section relative z-[17] flex h-screen min-h-[560px] items-center justify-center overflow-hidden bg-[#0A0A0A] px-6 text-[#F2EDE4]"
-      >
-        <div className="magnetic-mark-field flex items-center justify-center" aria-hidden="true">
-          <Image
-            src="/images/vampire-sex-red-handstyle-logo.jpeg"
-            alt=""
-            width={1024}
-            height={1024}
-            priority={false}
-            className="magnetic-mark-logo h-auto w-[84vw] max-w-[760px] object-contain opacity-0 mix-blend-screen blur-[0.2px] saturate-[0.98] drop-shadow-[0_0_38px_rgba(139,0,0,0.42)]"
+      {/* NORMALIZE BACKDROP — short atmospheric bridge into products */}
+      <div id="normalize-section" className="relative z-[18] flex h-[62vh] min-h-[360px] items-center justify-center overflow-hidden bg-[#E8DCC8] py-16 text-[#1A1612] md:h-[72vh]">
+        <div className="normalize-crosshair absolute inset-0 flex items-center justify-center" aria-hidden="true">
+          <video
+            className="normalize-video h-full w-full object-contain opacity-80 mix-blend-multiply"
+            src="/video/normalize-crosshair-loop.mp4"
+            poster="/images/normalize-crosshair-flow.png"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
           />
         </div>
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#4A7C3F]/55 to-transparent" aria-hidden="true" />
-        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#4A7C3F]/35 to-transparent" aria-hidden="true" />
-      </section>
-
-      {/* NORMALIZE IT — short atmospheric bridge into products */}
-      <div id="normalize-section" className="relative z-[18] flex h-screen min-h-[560px] items-center justify-center overflow-hidden bg-[#E8DCC8] py-16 text-[#1A1612]">
-        <div className="absolute inset-0 flex items-center justify-center opacity-[0.18]" aria-hidden="true">
-          <svg className="h-full w-full max-w-[1500px]" viewBox="0 0 1200 520" preserveAspectRatio="xMidYMid meet">
-            <defs>
-              <radialGradient id="normalize-e8-glow" cx="50%" cy="50%" r="52%">
-                <stop offset="0%" stopColor="#4A7C3F" stopOpacity="0.48" />
-                <stop offset="44%" stopColor="#8B0000" stopOpacity="0.16" />
-                <stop offset="100%" stopColor="#1A1612" stopOpacity="0" />
-              </radialGradient>
-              <pattern id="normalize-grid" width="36" height="36" patternUnits="userSpaceOnUse">
-                <path d="M 36 0 L 0 0 0 36" fill="none" stroke="#1A1612" strokeOpacity="0.18" strokeWidth="1" />
-              </pattern>
-            </defs>
-            <rect width="1200" height="520" fill="url(#normalize-grid)" />
-            <circle cx="600" cy="260" r="230" fill="url(#normalize-e8-glow)" />
-            {[64, 104, 148, 194].map((radius) => (
-              <circle key={radius} cx="600" cy="260" r={radius} fill="none" stroke="#1A1612" strokeOpacity="0.42" strokeWidth="1.5" />
-            ))}
-            {Array.from({ length: 24 }).map((_, index) => {
-              const angle = (index / 24) * Math.PI * 2;
-              const x1 = 600 + Math.cos(angle) * 64;
-              const y1 = 260 + Math.sin(angle) * 64;
-              const x2 = 600 + Math.cos(angle) * 194;
-              const y2 = 260 + Math.sin(angle) * 194;
-              return (
-                <line
-                  key={index}
-                  x1={Number(x1.toFixed(3))}
-                  y1={Number(y1.toFixed(3))}
-                  x2={Number(x2.toFixed(3))}
-                  y2={Number(y2.toFixed(3))}
-                  stroke="#4A7C3F"
-                  strokeOpacity="0.34"
-                  strokeWidth="1"
-                />
-              );
-            })}
-            {Array.from({ length: 48 }).map((_, index) => {
-              const ring = index % 3;
-              const radius = [104, 148, 194][ring];
-              const angle = (index / 48) * Math.PI * 2 + ring * 0.22;
-              const x = 600 + Math.cos(angle) * radius;
-              const y = 260 + Math.sin(angle) * radius;
-              return (
-                <circle
-                  key={index}
-                  cx={Number(x.toFixed(3))}
-                  cy={Number(y.toFixed(3))}
-                  r={ring === 2 ? 3.5 : 2.5}
-                  fill={ring === 1 ? '#8B0000' : '#1A1612'}
-                  fillOpacity="0.58"
-                />
-              );
-            })}
-            <path d="M170 260 H1030" stroke="#1A1612" strokeOpacity="0.22" strokeWidth="1.5" />
-            <path d="M600 30 V490" stroke="#1A1612" strokeOpacity="0.18" strokeWidth="1.5" />
-          </svg>
-        </div>
-        <div className="absolute inset-x-0 top-1/2 h-px bg-gradient-to-r from-transparent via-[#4A7C3F]/55 to-transparent" aria-hidden="true" />
-        <h2 className="relative z-10 bg-[#E8DCC8]/72 px-6 font-sans text-[12vw] tracking-tight text-[#1A1612] backdrop-blur-[1px] md:text-[4vw]">
+        <h2 className="normalize-title pointer-events-none relative z-10 bg-transparent px-6 font-sans text-[12vw] tracking-tight text-[#1A1612] md:text-[4vw]">
           <TypewriterText charDelay={0.06}>Normalize It</TypewriterText>
         </h2>
       </div>
@@ -460,13 +391,13 @@ export default function Home() {
       </section>
 
       {/* SECTION 4 — PRODUCT GRID */}
-      <section id="products-section" data-zoom="out" data-section-intro="dark" className="bg-[#0A0A0A] text-[#F2EDE4] py-24 px-6 md:px-12 relative z-30">
+      <section id="products-section" data-zoom="out" data-section-intro="dark" className="bg-[#0A0A0A] text-[#F2EDE4] py-20 px-6 md:px-12 relative z-30">
         <div className="parallax-bg bg-[#0A0A0A]"></div>
         <div className="section-inner section-intro-content relative z-10 max-w-[1600px] mx-auto">
           <CrimsonHeader />
-          <div className="mb-12 flex flex-col gap-4 border-y-[1.5px] border-[#8B0000]/45 py-8 text-center">
-            <p className="text-[10px] tracking-[0.42em] text-[#8B0000] uppercase">Drop Archive / Preview</p>
-            <h2 className="font-sans text-5xl leading-none tracking-tighter text-[#F2EDE4] md:text-7xl">
+          <div className="mb-10 flex flex-col gap-4 border-y-[1.5px] border-[#4A7C3F]/35 py-8 text-center md:mb-12">
+            <p className="text-[10px] tracking-[0.42em] text-[#4A7C3F] uppercase">Drop Archive / Preview</p>
+            <h2 className="font-sans text-[12vw] leading-[0.9] tracking-tighter text-[#F2EDE4] md:text-7xl">
               New Merchandise In Development
             </h2>
             <p className="mx-auto max-w-2xl text-base leading-7 normal-case tracking-normal text-[#F2EDE4]/62">
@@ -474,56 +405,65 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-[0.5px] bg-[#1A1612] border-[0.5px] border-[#1A1612]">
+          <div className="mb-5 flex items-center justify-between gap-4 md:hidden">
+            <span className="font-mono text-[9px] uppercase tracking-[0.28em] text-[#F2EDE4]/38">Swipe the archive</span>
+            <span className="font-mono text-[9px] uppercase tracking-[0.28em] text-[#4A7C3F]">01-04</span>
+          </div>
+
+          <div className="drop-archive grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
             {/* Card 1 — top-left (2-col): zoom IN */}
-            <div id="product-tl" className="md:col-span-2 bg-[#E8DCC8] text-[#1A1612] p-8 group transition-colors duration-200 hover:border-[#8B0000] border-[1.5px] border-transparent relative product-card">
-              <div className="aspect-[4/3] relative mb-8 bg-[#0A0A0A]/5">
-                <Image src="/images/vs_urban_tees_1776346145677.jpg" alt="Crimson Relic Tee" fill sizes="(max-width: 768px) 100vw, 66vw" className="object-contain object-center mix-blend-multiply" />
+            <div id="product-tl" className="drop-card md:col-span-2 bg-[#E8DCC8] text-[#1A1612] p-5 md:p-8 group transition-colors duration-200 hover:border-[#4A7C3F] border-[1.5px] border-[#4A7C3F]/20 relative product-card overflow-hidden">
+              <div className="aspect-[4/3] relative mb-6 overflow-hidden bg-[#F2EDE4] md:mb-8">
+                <Image src="/images/vs_urban_tees_1776346145677.jpg" alt="Crimson Relic Tee" fill sizes="(max-width: 768px) 100vw, 66vw" className="object-contain object-center p-4 md:p-6" />
               </div>
-              <div className="flex justify-between items-end">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <h3 className="font-sans text-5xl mb-2 tracking-tighter">CRIMSON RELIC TEE</h3>
+                  <h3 className="font-sans text-[13vw] leading-[0.86] tracking-tighter sm:text-5xl">CRIMSON RELIC TEE</h3>
                   <p className="text-sm normal-case tracking-normal opacity-60">Registry preview. Final drop details pending.</p>
                 </div>
+                <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#4A7C3F]">Coming Soon</span>
               </div>
             </div>
 
             {/* Card 2 — top-right: zoom OUT */}
-            <div id="product-tr" className="bg-[#0A0A0A] p-8 group transition-colors duration-200 hover:border-[#8B0000] border-[1.5px] border-transparent relative product-card">
-              <div className="aspect-square relative mb-8 bg-[#1A1612]">
-                <Image src="/images/vs_urban_hoodies_1776346269547.jpg" alt="Void Covenant Hoodie" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-contain object-center opacity-80" />
+            <div id="product-tr" className="drop-card bg-[#14110E] p-5 md:p-8 group transition-colors duration-200 hover:border-[#4A7C3F] border-[1.5px] border-[#4A7C3F]/18 relative product-card overflow-hidden">
+              <div className="aspect-square relative mb-6 overflow-hidden bg-[#E8DCC8]/7 md:mb-8">
+                <Image src="/images/vs_urban_hoodies_1776346269547.jpg" alt="Void Covenant Hoodie" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-contain object-center p-4 md:p-5" />
               </div>
-              <div className="flex justify-between items-end">
+              <div className="flex flex-col gap-3">
                 <div>
-                  <h3 className="font-sans text-4xl mb-2 tracking-tighter">VOID COVENANT HOODIE</h3>
+                  <h3 className="font-sans text-[12vw] leading-[0.88] tracking-tighter sm:text-4xl">VOID COVENANT HOODIE</h3>
                   <p className="text-sm normal-case tracking-normal opacity-60">Registry preview. Final drop details pending.</p>
                 </div>
+                <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#4A7C3F]">Coming Soon</span>
               </div>
             </div>
 
             {/* Card 3 — bottom-left: zoom OUT */}
-            <div id="product-bl" className="bg-[#0A0A0A] p-8 group transition-colors duration-200 hover:border-[#8B0000] border-[1.5px] border-transparent relative product-card">
-              <div className="aspect-square relative mb-8 bg-[#1A1612]">
-                <Image src="/images/vs_studio_caps_1776346579559.jpg" alt="Nocturne Crown Snapback" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-contain object-center opacity-80" />
+            <div id="product-bl" className="drop-card bg-[#14110E] p-5 md:p-8 group transition-colors duration-200 hover:border-[#4A7C3F] border-[1.5px] border-[#4A7C3F]/18 relative product-card overflow-hidden">
+              <div className="aspect-square relative mb-6 overflow-hidden bg-[#E8DCC8]/7 md:mb-8">
+                <Image src="/images/vs_studio_caps_1776346579559.jpg" alt="Nocturne Crown Snapback" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-contain object-center p-4 md:p-5" />
               </div>
-              <div className="flex justify-between items-end">
+              <div className="flex flex-col gap-3">
                 <div>
-                  <h3 className="font-sans text-4xl mb-2 tracking-tighter">NOCTURNE CROWN SNAPBACK</h3>
+                  <h3 className="font-sans text-[12vw] leading-[0.88] tracking-tighter sm:text-4xl">NOCTURNE CROWN SNAPBACK</h3>
                   <p className="text-sm normal-case tracking-normal opacity-60">Registry preview. Final drop details pending.</p>
                 </div>
+                <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#4A7C3F]">Coming Soon</span>
               </div>
             </div>
 
             {/* Card 4 — bottom-right (2-col): zoom IN */}
-            <div id="product-br" className="md:col-span-2 bg-[#0A0A0A] p-8 group transition-colors duration-200 hover:border-[#8B0000] border-[1.5px] border-transparent relative product-card">
-              <div className="aspect-[3/2] relative mb-8 bg-[#1A1612]">
-                <Image src="/images/vs_studio_jackets_1776346376867.jpg" alt="Parish Cloak Jacket" fill sizes="(max-width: 768px) 100vw, 66vw" className="object-contain object-center opacity-80" />
+            <div id="product-br" className="drop-card md:col-span-2 bg-[#14110E] p-5 md:p-8 group transition-colors duration-200 hover:border-[#4A7C3F] border-[1.5px] border-[#4A7C3F]/18 relative product-card overflow-hidden">
+              <div className="aspect-[3/2] relative mb-6 overflow-hidden bg-[#E8DCC8]/7 md:mb-8">
+                <Image src="/images/vs_studio_jackets_1776346376867.jpg" alt="Parish Cloak Jacket" fill sizes="(max-width: 768px) 100vw, 66vw" className="object-contain object-center p-4 md:p-6" />
               </div>
-              <div className="flex justify-between items-end">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <h3 className="font-sans text-5xl mb-2 tracking-tighter">PARISH CLOAK JACKET</h3>
+                  <h3 className="font-sans text-[13vw] leading-[0.86] tracking-tighter sm:text-5xl">PARISH CLOAK JACKET</h3>
                   <p className="text-sm normal-case tracking-normal opacity-60">Registry preview. Final drop details pending.</p>
                 </div>
+                <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#4A7C3F]">Coming Soon</span>
               </div>
             </div>
           </div>
@@ -531,7 +471,7 @@ export default function Home() {
       </section>
 
       {/* SECTION 5 — HEX VENOM USB FEATURE */}
-      <section id="usb-section" data-zoom="in" data-section-intro="blood" className="bg-[#1A1612] text-[#F2EDE4] border-y-[1.5px] border-[#8B0000] relative z-40 overflow-hidden">
+      <section id="usb-section" aria-hidden="true" className="hidden">
         <div className="section-intro-content grid grid-cols-1 md:grid-cols-12 max-w-[1600px] mx-auto min-h-[400px]">
           <div className="md:col-span-6 lg:col-span-5 relative h-[400px] md:h-auto border-b-[1.5px] md:border-b-0 md:border-r-[1.5px] border-[#8B0000] overflow-hidden group">
             <Image
@@ -599,100 +539,47 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION 6 — BOOKINGS & EPK */}
+      {/* SECTION 6 — LISTEN / BOOKING ROUTES */}
       <section id="epk-section" data-zoom="neutral" data-section-intro="dark" className="bg-[#0A0A0A] text-[#F2EDE4] py-24 px-6 md:px-12 relative z-50 overflow-hidden">
-        {/* Animated background texture */}
-        <div className="epk-noise-wrap absolute inset-0 pointer-events-none z-0">
-          <svg width="100%" height="100%" className="opacity-[0.04]">
-            <filter id="epk-noise">
-              <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="4" stitchTiles="stitch" result="noise">
-                <animate attributeName="seed" values="0;100" dur="3s" repeatCount="indefinite" />
-              </feTurbulence>
-              <feColorMatrix type="saturate" values="0" />
-            </filter>
-            <rect width="100%" height="100%" filter="url(#epk-noise)" />
-          </svg>
-        </div>
-        <div className="section-intro-content max-w-[1600px] mx-auto from-bottom relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 relative z-10">
-
-            {/* Left Column: EPK & Media Player */}
-            <div className="space-y-12">
-              <div>
-                <h2 className="font-sans text-6xl tracking-tighter mb-6">PRESS + ONE-SHEET</h2>
-                <a
-                  href="/epk"
-                  className="inline-flex items-center gap-4 bg-[#E8DCC8] text-[#1A1612] px-8 py-4 font-sans text-2xl tracking-wide hover:bg-[#4A7C3F] hover:text-[#F2EDE4] transition-colors"
-                >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                  </svg>
-                  VIEW ONE-SHEET
-                </a>
-              </div>
-
-              <MediaPlayer />
+        <div className="section-intro-content max-w-[1500px] mx-auto relative z-10">
+          <div className="mb-12 grid grid-cols-1 gap-8 border-y-[1.5px] border-[#4A7C3F]/30 py-10 md:grid-cols-[1.1fr_0.9fr] md:items-end">
+            <div>
+              <p className="mb-4 text-[10px] uppercase tracking-[0.42em] text-[#4A7C3F]">Listen / Booking / Press</p>
+              <h2 className="font-sans text-[16vw] leading-[0.82] tracking-tighter md:text-[7vw]">
+                HEAR IT.<br />BOOK IT.
+              </h2>
             </div>
+            <p className="max-w-xl text-base leading-7 normal-case tracking-normal text-[#F2EDE4]/68 md:text-lg">
+              The homepage stays fast and direct. Full booking context, press copy, and deeper proof live on the one-sheet.
+            </p>
+          </div>
 
-            {/* Right Column: Stats & Bookings */}
-            <div className="space-y-12 flex flex-col justify-between">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_420px]">
+            <MediaPlayer />
+
+            <div className="flex flex-col justify-between gap-5 border-[1.5px] border-[#4A7C3F]/45 bg-[#11100E] p-6 md:p-8">
               <div>
-                <div className="flex justify-between items-end mb-6">
-                  <h2 className="font-sans text-5xl tracking-tighter">BOOK VAMPIRE SEX</h2>
-                </div>
+                <p className="mb-4 text-[10px] uppercase tracking-[0.36em] text-[#4A7C3F]">Next Step</p>
+                <h3 className="font-sans text-5xl leading-none tracking-tighter">PRESS KIT BELOW THE SURFACE.</h3>
+                <p className="mt-5 text-sm leading-6 normal-case tracking-normal text-[#F2EDE4]/58">
+                  Use the one-sheet for festival circuit positioning, press, and booking details. Use the offer form when the date is real.
+                </p>
+              </div>
+              <div className="grid gap-3">
+                <Link
+                  href="/epk"
+                  className={darkCtaClass}
+                >
+                  View One-Sheet
+                </Link>
                 <button
                   type="button"
                   onClick={() => setIsOfferModalOpen(true)}
-                  className="w-full text-left bg-[#1A1612] text-[#F2EDE4] border-[1.5px] border-[#4A7C3F] p-8 flex justify-between items-center group hover:bg-[#4A7C3F] transition-colors"
+                  className={darkCtaClass}
                 >
-                  <span className="font-sans text-3xl tracking-widest">MAKE AN OFFER</span>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="group-hover:translate-x-2 transition-transform">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
+                  Make An Offer
                 </button>
               </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <StatCounter end={2.71} suffix="M" label="Total Streams" />
-                <StatCounter end={44} label="Chart Placements" />
-                <StatCounter end={300} label="DJ Supports" />
-                <StatCounter end={9.9} suffix="M" label="Total Video Views" />
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* EDITORIAL TYPE BLOCK */}
-          <div id="editorial-block" className="mt-24 w-full border-[1.5px] border-[#4A7C3F] overflow-hidden bg-[#0A0A0A] flex flex-col justify-between px-8 md:px-16 py-12 md:py-16 gap-8">
-            <div className="flex justify-between items-start">
-              <span className="text-[9px] tracking-[0.35em] text-[#4A7C3F] uppercase">Underground Music & Streetwear</span>
-              <span className="text-[9px] tracking-[0.25em] text-[#F2EDE4]/30 font-mono uppercase">Miami, FL</span>
-            </div>
-            <div className="overflow-hidden">
-              <h2
-                className="font-sans text-[13vw] md:text-[10vw] leading-[0.82] tracking-tighter text-[#F2EDE4] from-left"
-                id="editorial-wordmark"
-              >
-                VAMPIRE<br />SEX
-              </h2>
-            </div>
-            <div className="flex flex-col sm:flex-row justify-between items-end gap-4 border-t-[1.5px] border-[#4A7C3F]/20 pt-6">
-              <div className="max-w-md">
-                <SplitFlapText
-                  ref={splitFlapRef}
-                  id="editorial-splitflap"
-                  className="text-xs tracking-widest"
-                  staggerMs={60}
-                  flipOutStaggerMs={25}
-                >
-                  2.71M STREAMS · 44 CHARTS · 300 DJ SUPPORTS · ADE 2025
-                </SplitFlapText>
-              </div>
-              <span className="border border-[#4A7C3F] text-[#E8DCC8] px-3 py-1 text-[9px] tracking-widest uppercase whitespace-nowrap">Aesthetic No.1</span>
             </div>
           </div>
         </div>
