@@ -487,6 +487,32 @@ function initAboutSection() {
 //        triggered once on enter, expo.out for silky feel.
 // ─────────────────────────────────────────────
 function initProductCards() {
+  const products = document.querySelector<HTMLElement>('#products-section');
+  const normalize = document.querySelector<HTMLElement>('#normalize-section');
+  const normalizeCrosshair = normalize?.querySelector<HTMLElement>('.normalize-crosshair');
+
+  if (products && normalize) {
+    gsap.set(products, {
+      marginTop: '-34vh',
+    });
+  }
+
+  if (normalize && normalizeCrosshair) {
+    gsap.to(normalizeCrosshair, {
+      y: '-10vh',
+      scale: 0.94,
+      opacity: 0.58,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#products-section',
+        start: 'top bottom',
+        end: 'top 20%',
+        scrub: 1.2,
+        invalidateOnRefresh: true,
+      },
+    });
+  }
+
   // Header scroll parallax (element lives in a React component)
   const header = document.querySelector<HTMLElement>('[data-crimson-header]');
   if (header) {
@@ -777,7 +803,7 @@ function initSectionPins() {
     gsap.set(products, {
       position: 'relative',
       zIndex: 72,
-      marginTop: '-18vh',
+      marginTop: '-34vh',
     });
 
     ScrollTrigger.create({

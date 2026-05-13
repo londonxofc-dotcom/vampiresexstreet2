@@ -391,7 +391,7 @@ export default function Home() {
       </section>
 
       {/* SECTION 4 — PRODUCT GRID */}
-      <section id="products-section" data-zoom="out" data-section-intro="dark" className="bg-[#0A0A0A] text-[#F2EDE4] py-20 px-6 md:px-12 relative z-30">
+      <section id="products-section" data-zoom="out" data-section-intro="dark" className="crimson-overlap-section bg-[#0A0A0A] text-[#F2EDE4] py-20 px-6 md:px-12 relative z-30">
         <div className="parallax-bg bg-[#0A0A0A]"></div>
         <div className="section-inner section-intro-content relative z-10 max-w-[1600px] mx-auto">
           <CrimsonHeader />
