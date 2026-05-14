@@ -100,9 +100,58 @@
   to { transform: rotate(360deg); }
 }
 
+.sound-signal-toggle {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.sound-signal-toggle::before {
+  content: '';
+  position: absolute;
+  inset: -70% -45%;
+  z-index: -1;
+  background:
+    linear-gradient(
+      100deg,
+      transparent 0%,
+      transparent 43%,
+      rgba(74, 124, 63, 0.12) 48%,
+      rgba(232, 220, 200, 0.68) 50%,
+      rgba(74, 124, 63, 0.12) 52%,
+      transparent 57%,
+      transparent 100%
+    );
+  opacity: 0;
+  transform: translate3d(-90%, 0, 0) skewX(-18deg);
+}
+
+.sound-signal-toggle:hover::before,
+.sound-signal-toggle:focus-visible::before {
+  opacity: 1;
+  animation: sound-signal-wake 840ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.sound-signal-toggle:hover,
+.sound-signal-toggle:focus-visible {
+  box-shadow:
+    0 0 0 1px rgba(74, 124, 63, 0.12) inset,
+    0 10px 24px rgba(26, 22, 18, 0.1);
+}
+
+@keyframes sound-signal-wake {
+  from {
+    transform: translate3d(-90%, 0, 0) skewX(-18deg);
+  }
+  to {
+    transform: translate3d(90%, 0, 0) skewX(-18deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .group\/vs-menu:hover .vs-menu-disc,
-  .group\/vs-menu:focus-visible .vs-menu-disc {
+  .group\/vs-menu:focus-visible .vs-menu-disc,
+  .sound-signal-toggle:hover::before,
+  .sound-signal-toggle:focus-visible::before {
     animation: none;
   }
 }
@@ -124,11 +173,22 @@
 
 .hero-cta-button:hover,
 .hero-cta-button:focus-visible {
+  border-color: #4A7C3F !important;
+  background: #4A7C3F !important;
+  color: #F2EDE4 !important;
   box-shadow:
     0 1px 0 rgba(26, 22, 18, 0.95),
     0 12px 0 rgba(74, 124, 63, 0.18),
     0 26px 44px rgba(26, 22, 18, 0.18);
   transform: translate3d(0, -3px, 0);
+}
+
+.hero-cta-sequence .hero-cta-book:hover,
+.hero-cta-sequence .hero-cta-book:focus-visible {
+  animation: none;
+  border-color: #4A7C3F !important;
+  background: #4A7C3F !important;
+  color: #F2EDE4 !important;
 }
 
 .hero-cta-button:active {
@@ -162,17 +222,19 @@
     transform: scale(1);
     box-shadow: none;
   }
-  34%, 58% {
-    background: #1A1612;
-    color: #E8DCC8;
+  30%, 48%, 66% {
+    background: #4A7C3F;
+    border-color: #4A7C3F;
+    color: #F2EDE4;
     box-shadow:
       0 1px 0 rgba(26, 22, 18, 0.95),
       0 12px 0 rgba(74, 124, 63, 0.18),
       0 0 30px rgba(74, 124, 63, 0.22),
       0 26px 44px rgba(26, 22, 18, 0.18);
   }
-  46%, 70%, 100% {
+  39%, 57%, 76%, 100% {
     background: transparent;
+    border-color: #1A1612;
     color: #1A1612;
     box-shadow:
       0 1px 0 rgba(26, 22, 18, 0.85),

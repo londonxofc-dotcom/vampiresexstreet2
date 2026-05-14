@@ -36,6 +36,26 @@ export default function VideoIntro({ onDone }: VideoIntroProps) {
       .catch(() => setPlaybackBlocked(true));
   }, []);
 
+  const handleEnded = useCallback(() => {
+    const video = videoRef.current;
+    if (
+      video &&
+      Number.isFinite(video.duration) &&
+      video.duration > 1 &&
+      video.currentTime < video.duration - 0.35
+    ) {
+      attemptPlay();
+      return;
+    }
+
+    finish();
+  }, [attemptPlay, finish]);
+
+  const handleError = useCallback(() => {
+    if (doneRef.current) return;
+    setPlaybackBlocked(true);
+  }, []);
+
   useEffect(() => {
     const timeout = window.setTimeout(() => {
       const video = videoRef.current;
@@ -77,8 +97,8 @@ export default function VideoIntro({ onDone }: VideoIntroProps) {
         disablePictureInPicture
         controls={false}
         onCanPlay={attemptPlay}
-        onEnded={finish}
-        onError={finish}
+        onEnded={handleEnded}
+        onError={handleError}
         onClick={(event) => {
           event.stopPropagation();
           attemptPlay();
@@ -98,24 +118,11 @@ export default function VideoIntro({ onDone }: VideoIntroProps) {
           event.stopPropagation();
           finish();
         }}
-        className={`absolute right-5 top-[calc(env(safe-area-inset-top)+1.25rem)] min-h-11 border border-[#E8DCC8]/30 bg-black/55 px-4 py-3 font-mono text-[10px] uppercase tracking-[0.24em] text-[#E8DCC8]/70 backdrop-blur transition-all duration-300 hover:border-[#E8DCC8] hover:text-[#E8DCC8] ${
+        className={`absolute right-5 top-[calc(env(safe-area-inset-top)+1.25rem)] min-h-11 border border-transparent bg-transparent px-4 py-3 font-mono text-[10px] uppercase tracking-[0.24em] text-[#E8DCC8]/70 transition-all duration-300 hover:border-[#E8DCC8]/35 hover:text-[#E8DCC8] ${
           exiting ? 'opacity-0 blur-sm' : 'opacity-100 blur-0'
         }`}
       >
         Skip
-      </button>
-
-      <button
-        type="button"
-        onClick={(event) => {
-          event.stopPropagation();
-          finish();
-        }}
-        className={`absolute bottom-[calc(env(safe-area-inset-bottom)+1.15rem)] left-1/2 min-h-11 -translate-x-1/2 bg-transparent px-4 py-3 font-mono text-[10px] uppercase tracking-[0.36em] text-[#E8DCC8]/72 underline decoration-[#E8DCC8]/24 underline-offset-[6px] transition-all duration-300 hover:text-[#E8DCC8] hover:decoration-[#E8DCC8]/70 md:bottom-7 ${
-          exiting ? 'translate-y-2 opacity-0 blur-sm' : 'opacity-100 blur-0'
-        }`}
-      >
-        Enter
       </button>
 
       {playbackBlocked && !exiting && (

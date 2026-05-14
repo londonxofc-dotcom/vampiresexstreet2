@@ -145,6 +145,17 @@ export default function Navbar({ visible = true }: NavbarProps) {
               </button>
             </div>
           </div>
+          <div
+            className="hidden self-start border border-[#1A1612]/25 bg-[#E8DCC8]/30 px-3 py-2 text-right text-[#1A1612]/70 shadow-[0_10px_28px_rgba(26,22,18,0.08)] backdrop-blur-[2px] lg:block"
+            aria-label="Vampire Sex trademark and copyright notice"
+            style={{ fontFamily: '"Didot", "Bodoni 72", "Bodoni 72 Smallcaps", "Times New Roman", serif' }}
+          >
+            <p className="text-[9px] uppercase tracking-[0.34em]">© 2026</p>
+            <p className="mt-1 text-[13px] uppercase tracking-[0.22em] text-[#1A1612]">
+              Vampire Sex™
+            </p>
+            <p className="mt-1 text-[8px] uppercase tracking-[0.32em]">Est. 2023</p>
+          </div>
           <div className="hidden gap-1 text-[#1A1612]/40 sm:flex">
             {[0,1,2,3].map(i => <span key={i} className="text-xl leading-none">|</span>)}
           </div>

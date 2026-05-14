@@ -1,7 +1,7 @@
 # Graph Report - vampire-sex-street-main  (2026-05-13)
 
 ## Corpus Check
-- 40 files · ~772,998 words
+- 40 files · ~775,909 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary

@@ -493,7 +493,7 @@ function initProductCards() {
 
   if (products && normalize) {
     gsap.set(products, {
-      marginTop: '-34vh',
+      marginTop: '-14vh',
     });
   }
 
@@ -505,7 +505,7 @@ function initProductCards() {
       ease: 'none',
       scrollTrigger: {
         trigger: '#products-section',
-        start: 'top bottom',
+        start: 'top 82%',
         end: 'top 20%',
         scrub: 1.2,
         invalidateOnRefresh: true,
@@ -790,7 +790,7 @@ function initSectionPins() {
     ScrollTrigger.create({
       trigger: normalize,
       start: 'top top',
-      end: '+=130%',
+      end: '+=160%',
       pin: true,
       pinSpacing: true,
       anticipatePin: 1,
@@ -803,7 +803,7 @@ function initSectionPins() {
     gsap.set(products, {
       position: 'relative',
       zIndex: 72,
-      marginTop: '-34vh',
+      marginTop: '-14vh',
     });
 
     ScrollTrigger.create({

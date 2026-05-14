@@ -14,13 +14,47 @@ import VideoIntro from '@/components/VideoIntro';
 import SoundToggle from '@/components/SoundToggle';
 import SectionNav from '@/components/SectionNav';
 
+const MERCH_SLIDES = [
+  {
+    title: 'CRIMSON RELIC TEE',
+    description: 'Registry preview. Final drop details pending.',
+    status: 'Coming Soon',
+    src: '/images/vs_urban_tees_1776346145677.jpg',
+    alt: 'Crimson Relic Tee',
+    tone: 'bone',
+  },
+  {
+    title: 'VOID COVENANT HOODIE',
+    description: 'Registry preview. Final drop details pending.',
+    status: 'Coming Soon',
+    src: '/images/vs_urban_hoodies_1776346269547.jpg',
+    alt: 'Void Covenant Hoodie',
+    tone: 'dark',
+  },
+  {
+    title: 'NOCTURNE CROWN SNAPBACK',
+    description: 'Registry preview. Final drop details pending.',
+    status: 'Coming Soon',
+    src: '/images/vs_studio_caps_1776346579559.jpg',
+    alt: 'Nocturne Crown Snapback',
+    tone: 'dark',
+  },
+  {
+    title: 'PARISH CLOAK JACKET',
+    description: 'Registry preview. Final drop details pending.',
+    status: 'Coming Soon',
+    src: '/images/vs_studio_jackets_1776346376867.jpg',
+    alt: 'Parish Cloak Jacket',
+    tone: 'dark',
+  },
+];
+
 export default function Home() {
   const [introDone, setIntroDone] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const forceIntro = params.has('intro') || params.has('fresh');
-    if (!forceIntro && window.sessionStorage.getItem('vss-video-intro-seen') === 'true') {
+    if (params.has('skipIntro') || params.has('noIntro')) {
       setIntroDone(true);
     }
   }, []);
@@ -38,7 +72,9 @@ export default function Home() {
   const [heroVisible, setHeroVisible] = useState(false);
   const [heroDetailsVisible, setHeroDetailsVisible] = useState(false);
   const [heroIntroStarted, setHeroIntroStarted] = useState(false);
+  const [soundToggleVisible, setSoundToggleVisible] = useState(false);
   const [isMobileViewport, setIsMobileViewport] = useState(false);
+  const [activeMerchIndex, setActiveMerchIndex] = useState(0);
 
   useEffect(() => {
     const media = window.matchMedia('(max-width: 767px)');
@@ -87,6 +123,7 @@ export default function Home() {
     if (!heroIntroStarted) return;
 
     document.body.style.overflow = 'hidden';
+    setSoundToggleVisible(false);
 
     const wordmarkDelay = isMobileViewport ? 160 : 120;
     const detailsDelay = isMobileViewport ? 1450 : 2050;
@@ -102,6 +139,19 @@ export default function Home() {
       document.body.style.overflow = '';
     };
   }, [heroIntroStarted, isMobileViewport]);
+
+  useEffect(() => {
+    if (!heroDetailsVisible) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) {
+      setSoundToggleVisible(true);
+      return;
+    }
+
+    const fallback = window.setTimeout(() => setSoundToggleVisible(true), 2350);
+    return () => window.clearTimeout(fallback);
+  }, [heroDetailsVisible]);
 
   useEffect(() => {
     if (!introDone) return;
@@ -126,7 +176,6 @@ export default function Home() {
   }, [bloodlinePopupDismissed, introDone, registrySubmitted]);
 
   const completeIntro = useCallback(() => {
-    window.sessionStorage.setItem('vss-video-intro-seen', 'true');
     setIntroDone(true);
   }, []);
 
@@ -178,8 +227,21 @@ export default function Home() {
     }
   }, []);
 
+  const goToPreviousMerch = useCallback(() => {
+    setActiveMerchIndex((current) => (
+      current === 0 ? MERCH_SLIDES.length - 1 : current - 1
+    ));
+  }, []);
+
+  const goToNextMerch = useCallback(() => {
+    setActiveMerchIndex((current) => (
+      current === MERCH_SLIDES.length - 1 ? 0 : current + 1
+    ));
+  }, []);
+
   const lightCtaClass = 'min-h-[54px] border-[1.5px] border-[#1A1612] bg-transparent px-7 py-4 text-center font-sans text-xl tracking-[0.12em] uppercase text-[#1A1612] transition-colors hover:border-[#4A7C3F] hover:bg-[#4A7C3F] hover:text-[#F2EDE4]';
   const darkCtaClass = 'min-h-[52px] border-[1.5px] border-[#4A7C3F] bg-transparent px-5 py-4 text-center font-sans text-xl uppercase tracking-[0.14em] text-[#F2EDE4] transition-colors hover:bg-[#4A7C3F] hover:text-[#F2EDE4]';
+  const activeMerch = MERCH_SLIDES[activeMerchIndex];
 
   return (
     <main className="min-h-[100dvh] bg-[#0A0A0A]">
@@ -187,7 +249,7 @@ export default function Home() {
 
       <Navbar visible={introDone && (heroIntroStarted || heroDetailsVisible)} />
       <SectionNav visible={introDone && heroDetailsVisible} />
-      <SoundToggle visible={introDone} />
+      {introDone && soundToggleVisible && <SoundToggle />}
 
       {/* SECTION 1 — HERO */}
       <section
@@ -196,10 +258,10 @@ export default function Home() {
         className="bg-[#E8DCC8] text-[#1A1612] relative z-10"
       >
         <div className="parallax-bg bg-[#E8DCC8]"></div>
-        <div className="section-inner relative z-10 flex min-h-[100dvh] flex-col pt-32 pb-10">
+        <div className="section-inner relative z-10 flex min-h-[100dvh] flex-col pt-24 pb-10 md:pt-32">
 
           {/* Main Wordmark */}
-          <div className="flex-grow flex flex-col justify-center items-center px-6 md:px-12 mt-12 mb-10">
+          <div className="flex-grow flex -translate-y-8 flex-col justify-center items-center px-6 md:px-12 mt-0 mb-8 md:mt-12 md:mb-10 md:translate-y-0">
             <h1
               id="hero-wordmark"
               className="font-sans text-[15vw] leading-[0.8] tracking-tighter text-[#1A1612] w-full text-center"
@@ -216,6 +278,11 @@ export default function Home() {
               className={`mt-10 flex w-full max-w-4xl flex-col justify-center gap-3 transition-all duration-500 sm:flex-row ${
                 heroDetailsVisible ? 'hero-cta-sequence translate-y-0 opacity-100 blur-0' : 'translate-y-4 opacity-0 blur-[2px]'
               }`}
+              onAnimationEnd={(event) => {
+                if (event.animationName === 'hero-cta-drop') {
+                  setSoundToggleVisible(true);
+                }
+              }}
             >
               <button
                 type="button"
@@ -248,7 +315,7 @@ export default function Home() {
         id="identity-stripe"
         data-zoom="neutral"
         data-compact
-        className="relative z-[16] border-y-[1.5px] border-[#1A1612] bg-[#4A7C3F] px-6 py-3 text-[#F2EDE4] md:px-12"
+        className="relative z-[16] border-y-[1.5px] border-[#1A1612] bg-[#4A7C3F] px-6 py-4 pb-9 text-[#F2EDE4] md:px-12 md:py-3"
       >
         <div className="mx-auto flex max-w-[1600px] flex-col items-center justify-center gap-1 text-center sm:flex-row sm:justify-between">
           <span className="text-[10px] tracking-[0.34em] uppercase">Underground Music</span>
@@ -292,7 +359,7 @@ export default function Home() {
       </section>
 
       {/* NORMALIZE BACKDROP — short atmospheric bridge into products */}
-      <div id="normalize-section" className="relative z-[18] flex h-[62vh] min-h-[360px] items-center justify-center overflow-hidden bg-[#E8DCC8] py-16 text-[#1A1612] md:h-[72vh]">
+      <div id="normalize-section" className="relative z-[18] flex h-[72vh] min-h-[420px] items-center justify-center overflow-hidden bg-[#E8DCC8] py-16 text-[#1A1612] md:h-[100vh] md:min-h-[720px]">
         <div className="normalize-crosshair absolute inset-0 flex items-center justify-center" aria-hidden="true">
           <video
             className="normalize-video h-full w-full object-contain opacity-90"
@@ -390,7 +457,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION 4 — PRODUCT GRID */}
+      {/* SECTION 4 — PRODUCT CAROUSEL */}
       <section id="products-section" data-zoom="out" data-section-intro="dark" className="crimson-overlap-section bg-[#0A0A0A] text-[#F2EDE4] py-20 px-6 md:px-12 relative z-30">
         <div className="parallax-bg bg-[#0A0A0A]"></div>
         <div className="section-inner section-intro-content relative z-10 max-w-[1600px] mx-auto">
@@ -405,65 +472,82 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="mb-5 flex items-center justify-between gap-4 md:hidden">
-            <span className="font-mono text-[9px] uppercase tracking-[0.28em] text-[#F2EDE4]/38">Swipe the archive</span>
-            <span className="font-mono text-[9px] uppercase tracking-[0.28em] text-[#4A7C3F]">01-04</span>
-          </div>
-
-          <div className="drop-archive grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
-            {/* Card 1 — top-left (2-col): zoom IN */}
-            <div id="product-tl" className="drop-card md:col-span-2 bg-[#E8DCC8] text-[#1A1612] p-5 md:p-8 group transition-colors duration-200 hover:border-[#4A7C3F] border-[1.5px] border-[#4A7C3F]/20 relative product-card overflow-hidden">
-              <div className="aspect-[4/3] relative mb-6 overflow-hidden bg-[#F2EDE4] md:mb-8">
-                <Image src="/images/vs_urban_tees_1776346145677.jpg" alt="Crimson Relic Tee" fill sizes="(max-width: 768px) 100vw, 66vw" className="object-contain object-center p-4 md:p-6" />
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <h3 className="font-sans text-[13vw] leading-[0.86] tracking-tighter sm:text-5xl">CRIMSON RELIC TEE</h3>
-                  <p className="text-sm normal-case tracking-normal opacity-60">Registry preview. Final drop details pending.</p>
+          <div className="product-card relative overflow-hidden border-[1.5px] border-[#4A7C3F]/30 bg-[#11100E]">
+            <div className="grid grid-cols-1 lg:min-h-[620px] lg:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)]">
+              <div className={`relative h-[48vh] min-h-[300px] max-h-[410px] overflow-hidden border-b-[1.5px] border-[#4A7C3F]/25 lg:h-auto lg:max-h-none lg:min-h-[620px] lg:border-b-0 lg:border-r-[1.5px] ${
+                activeMerch.tone === 'bone' ? 'bg-[#E8DCC8]' : 'bg-[#14110E]'
+              }`}>
+                <Image
+                  key={activeMerch.src}
+                  src={activeMerch.src}
+                  alt={activeMerch.alt}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 60vw"
+                  className="object-contain object-center p-6 transition-transform duration-500 ease-out md:p-10 lg:p-14"
+                  priority={activeMerchIndex === 0}
+                />
+                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(74,124,63,0.16),transparent_32%,rgba(139,0,0,0.16))]" />
+                <div className="absolute left-5 top-5 border border-[#4A7C3F]/45 bg-[#0A0A0A]/72 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.28em] text-[#4A7C3F] backdrop-blur">
+                  {String(activeMerchIndex + 1).padStart(2, '0')} / {String(MERCH_SLIDES.length).padStart(2, '0')}
                 </div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#4A7C3F]">Coming Soon</span>
               </div>
-            </div>
 
-            {/* Card 2 — top-right: zoom OUT */}
-            <div id="product-tr" className="drop-card bg-[#14110E] p-5 md:p-8 group transition-colors duration-200 hover:border-[#4A7C3F] border-[1.5px] border-[#4A7C3F]/18 relative product-card overflow-hidden">
-              <div className="aspect-square relative mb-6 overflow-hidden bg-[#E8DCC8]/7 md:mb-8">
-                <Image src="/images/vs_urban_hoodies_1776346269547.jpg" alt="Void Covenant Hoodie" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-contain object-center p-4 md:p-5" />
-              </div>
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col justify-between gap-8 p-6 md:p-10 lg:min-h-[620px] lg:p-12">
                 <div>
-                  <h3 className="font-sans text-[12vw] leading-[0.88] tracking-tighter sm:text-4xl">VOID COVENANT HOODIE</h3>
-                  <p className="text-sm normal-case tracking-normal opacity-60">Registry preview. Final drop details pending.</p>
+                  <p className="mb-5 font-mono text-[10px] uppercase tracking-[0.42em] text-[#4A7C3F]">Crimson Archive Slide</p>
+                  <h3 className="max-w-[12ch] font-sans text-[15vw] leading-[0.84] tracking-tighter text-[#F2EDE4] sm:text-7xl lg:text-[6.4vw]">
+                    {activeMerch.title}
+                  </h3>
+                  <p className="mt-6 max-w-md text-base leading-7 normal-case tracking-normal text-[#F2EDE4]/60">
+                    {activeMerch.description}
+                  </p>
+                  <span className="mt-6 inline-flex border border-[#4A7C3F]/45 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.28em] text-[#4A7C3F]">
+                    {activeMerch.status}
+                  </span>
                 </div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#4A7C3F]">Coming Soon</span>
-              </div>
-            </div>
 
-            {/* Card 3 — bottom-left: zoom OUT */}
-            <div id="product-bl" className="drop-card bg-[#14110E] p-5 md:p-8 group transition-colors duration-200 hover:border-[#4A7C3F] border-[1.5px] border-[#4A7C3F]/18 relative product-card overflow-hidden">
-              <div className="aspect-square relative mb-6 overflow-hidden bg-[#E8DCC8]/7 md:mb-8">
-                <Image src="/images/vs_studio_caps_1776346579559.jpg" alt="Nocturne Crown Snapback" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-contain object-center p-4 md:p-5" />
-              </div>
-              <div className="flex flex-col gap-3">
-                <div>
-                  <h3 className="font-sans text-[12vw] leading-[0.88] tracking-tighter sm:text-4xl">NOCTURNE CROWN SNAPBACK</h3>
-                  <p className="text-sm normal-case tracking-normal opacity-60">Registry preview. Final drop details pending.</p>
-                </div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#4A7C3F]">Coming Soon</span>
-              </div>
-            </div>
+                <div className="space-y-5">
+                  <div className="grid grid-cols-2 border-[1.5px] border-[#4A7C3F]/35">
+                    <button
+                      type="button"
+                      onClick={goToPreviousMerch}
+                      className="min-h-14 border-r-[1.5px] border-[#4A7C3F]/35 font-sans text-2xl uppercase tracking-[0.14em] text-[#F2EDE4] transition-colors hover:bg-[#4A7C3F] hover:text-[#0A0A0A] focus-visible:bg-[#4A7C3F] focus-visible:text-[#0A0A0A]"
+                      aria-label="Previous merch slide"
+                    >
+                      Prev
+                    </button>
+                    <button
+                      type="button"
+                      onClick={goToNextMerch}
+                      className="min-h-14 font-sans text-2xl uppercase tracking-[0.14em] text-[#F2EDE4] transition-colors hover:bg-[#4A7C3F] hover:text-[#0A0A0A] focus-visible:bg-[#4A7C3F] focus-visible:text-[#0A0A0A]"
+                      aria-label="Next merch slide"
+                    >
+                      Next
+                    </button>
+                  </div>
 
-            {/* Card 4 — bottom-right (2-col): zoom IN */}
-            <div id="product-br" className="drop-card md:col-span-2 bg-[#14110E] p-5 md:p-8 group transition-colors duration-200 hover:border-[#4A7C3F] border-[1.5px] border-[#4A7C3F]/18 relative product-card overflow-hidden">
-              <div className="aspect-[3/2] relative mb-6 overflow-hidden bg-[#E8DCC8]/7 md:mb-8">
-                <Image src="/images/vs_studio_jackets_1776346376867.jpg" alt="Parish Cloak Jacket" fill sizes="(max-width: 768px) 100vw, 66vw" className="object-contain object-center p-4 md:p-6" />
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <h3 className="font-sans text-[13vw] leading-[0.86] tracking-tighter sm:text-5xl">PARISH CLOAK JACKET</h3>
-                  <p className="text-sm normal-case tracking-normal opacity-60">Registry preview. Final drop details pending.</p>
+                  <div className="grid grid-cols-4 gap-2" aria-label="Merch slide selector">
+                    {MERCH_SLIDES.map((slide, index) => {
+                      const isActive = index === activeMerchIndex;
+                      return (
+                        <button
+                          key={slide.title}
+                          type="button"
+                          onClick={() => setActiveMerchIndex(index)}
+                          aria-label={`Show ${slide.title}`}
+                          aria-pressed={isActive}
+                          className={`h-10 border font-mono text-[9px] uppercase tracking-[0.18em] transition-colors ${
+                            isActive
+                              ? 'border-[#4A7C3F] bg-[#4A7C3F] text-[#0A0A0A]'
+                              : 'border-[#4A7C3F]/25 text-[#F2EDE4]/45 hover:border-[#4A7C3F] hover:text-[#F2EDE4]'
+                          }`}
+                        >
+                          {String(index + 1).padStart(2, '0')}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#4A7C3F]">Coming Soon</span>
               </div>
             </div>
           </div>

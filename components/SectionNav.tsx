@@ -75,7 +75,7 @@ export default function SectionNav({ visible = true }: { visible?: boolean }) {
 
       <nav
         aria-label="Mobile page sections"
-        className="fixed bottom-4 left-1/2 z-[205] flex w-[calc(100vw-1.5rem)] max-w-[430px] -translate-x-1/2 items-end justify-between px-1 py-1 md:hidden"
+        className="fixed bottom-[calc(env(safe-area-inset-bottom)+8.25rem)] left-1/2 z-[205] flex w-[calc(100vw-2rem)] max-w-[390px] -translate-x-1/2 items-end justify-between px-1 py-1 md:hidden"
       >
         {SECTIONS.map(({ id, short }) => {
           const isActive = active === id;
@@ -84,13 +84,13 @@ export default function SectionNav({ visible = true }: { visible?: boolean }) {
               key={id}
               type="button"
               onClick={() => goToSection(id)}
-              className={`group flex min-h-10 flex-1 flex-col items-center justify-end gap-1 px-1 font-mono text-[9px] uppercase tracking-[0.16em] transition-colors [text-shadow:0_1px_9px_rgba(232,220,200,0.78),0_0_8px_rgba(10,10,10,0.42)] ${
-                isActive ? 'text-[#4A7C3F]' : 'text-[#1A1612]/62 hover:text-[#1A1612]'
+              className={`group flex min-h-8 flex-1 flex-col items-center justify-end gap-1 px-1 font-mono text-[8px] uppercase tracking-[0.18em] transition-colors [text-shadow:0_1px_10px_rgba(232,220,200,0.82),0_0_10px_rgba(10,10,10,0.38)] ${
+                isActive ? 'text-[#4A7C3F]' : 'text-[#1A1612]/48 hover:text-[#1A1612]'
               }`}
             >
               <span
                 className={`h-px transition-all ${
-                  isActive ? 'w-8 bg-[#4A7C3F]' : 'w-3 bg-current opacity-35 group-hover:w-6'
+                  isActive ? 'w-7 bg-[#4A7C3F]' : 'w-2.5 bg-current opacity-28 group-hover:w-5'
                 }`}
               />
               {short}
