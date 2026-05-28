@@ -95,11 +95,11 @@ const BOOT: BootLine[] = [
 ];
 
 const STATS: [string, string, string][] = [
-  ['STREAMS',          '2.71M',     '#FFC850'],
-  ['VIDEO VIEWS',      '9.9M',      '#F2EDE4'],
-  ['SHAZAMS',          '31.6K',     '#FFC850'],
-  ['DJ SUPPORTS',      '300',       '#F2EDE4'],
-  ['CHART PLACEMENTS', '44',        '#FFC850'],
+  ['STREAMS',          '2.9M',      '#FFC850'],
+  ['VIDEO VIEWS',      '10.2M',     '#F2EDE4'],
+  ['SHAZAMS',          '32.8K',     '#FFC850'],
+  ['DJ SUPPORTS',      '306',       '#F2EDE4'],
+  ['CHART PLACEMENTS', '47',        '#FFC850'],
   ['ADE 2025',         'CONFIRMED', '#6EC960'],
 ];
 

@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
 const tracks = [
-  { id: 1, title: 'Disco Party Baby', artist: 'Vampire Sex', url: '/audio/disco-party-baby.mp3', artwork: '/images/vs_urban_tees_1776346145677.jpg' },
-  { id: 2, title: 'C\'mon Dance With Me', artist: 'Vampire Sex', url: '/audio/cmon-dance-with-me.mp3', artwork: '/images/vs_urban_hoodies_1776346269547.jpg' },
-  { id: 3, title: 'That\'s Jack', artist: 'Vampire Sex', url: '/audio/thats-jack.mp3', artwork: '/images/vs_studio_caps_1776346579559.jpg' },
-  { id: 4, title: 'Madonna', artist: 'Vampire Sex', url: '/audio/madonna.mp3', artwork: '/images/vs_studio_jackets_1776346376867.jpg' },
+  { id: 1, title: 'Disco Party Baby', artist: 'Vampire Sex', url: '/audio/disco-party-baby.mp3', artwork: '/images/press/vs-ny-shoot-2.webp' },
+  { id: 2, title: 'C\'mon Dance With Me', artist: 'Vampire Sex', url: '/audio/cmon-dance-with-me.mp3', artwork: '/images/press/vs-ny-shoot-3.webp' },
+  { id: 3, title: 'That\'s Jack', artist: 'Vampire Sex', url: '/audio/thats-jack.mp3', artwork: '/images/press/vs-biggie-shoot.webp' },
+  { id: 4, title: 'Madonna', artist: 'Vampire Sex', url: '/audio/madonna.mp3', artwork: '/images/press/vs-biggie-shoot-playful.webp' },
 ];
 
 type MediaAudioWindow = Window & {
@@ -29,34 +29,51 @@ export function MediaPlayer({ autoPlayOnMount = false }: { autoPlayOnMount?: boo
     if (node) node.muted = Boolean((window as MediaAudioWindow).__vampireSexMuted);
   };
 
+  const playCurrentTrack = useCallback(() => {
+    if (!audioRef.current) return;
+
+    if (audioRef.current.src !== new URL(tracks[currentTrack].url, window.location.href).href) {
+      audioRef.current.src = tracks[currentTrack].url;
+    }
+
+    if ((window as MediaAudioWindow).__vampireSexMuted) {
+      audioRef.current.pause();
+      return;
+    }
+
+    document.querySelectorAll('audio').forEach((audio) => {
+      if (audio !== audioRef.current) audio.pause();
+    });
+
+    audioRef.current.play()
+      .then(() => {
+        setAutoplayBlocked(false);
+        setIsPlaying(true);
+      })
+      .catch(() => {
+        setIsPlaying(false);
+        setAutoplayBlocked(true);
+      });
+  }, [currentTrack]);
+
+  const requestPlayback = useCallback(() => {
+    autoplayAttemptedRef.current = true;
+    if ((window as MediaAudioWindow).__vampireSexMuted) return;
+    setAutoplayBlocked(false);
+    setIsPlaying(true);
+    playCurrentTrack();
+  }, [playCurrentTrack]);
+
   // Handle play/pause sync
   useEffect(() => {
     if (audioRef.current) {
-      if (audioRef.current.src !== new URL(tracks[currentTrack].url, window.location.href).href) {
-        audioRef.current.src = tracks[currentTrack].url;
-      }
-
       if (isPlaying) {
-        if ((window as MediaAudioWindow).__vampireSexMuted) {
-          audioRef.current.pause();
-          return;
-        }
-
-        document.querySelectorAll('audio').forEach((audio) => {
-          if (audio !== audioRef.current) audio.pause();
-        });
-
-        audioRef.current.play()
-          .then(() => setAutoplayBlocked(false))
-          .catch(() => {
-            setIsPlaying(false);
-            setAutoplayBlocked(true);
-          });
+        playCurrentTrack();
       } else {
         audioRef.current.pause();
       }
     }
-  }, [isPlaying, currentTrack]);
+  }, [isPlaying, playCurrentTrack]);
 
   useEffect(() => {
     const syncMutedState = () => {
@@ -65,28 +82,38 @@ export function MediaPlayer({ autoPlayOnMount = false }: { autoPlayOnMount?: boo
       if (muted) {
         audioRef.current?.pause();
         setIsPlaying(false);
+      } else if (autoPlayOnMount && autoplayAttemptedRef.current) {
+        requestPlayback();
       }
     };
 
     syncMutedState();
     window.addEventListener('vss:sound-muted', syncMutedState);
     return () => window.removeEventListener('vss:sound-muted', syncMutedState);
-  }, []);
+  }, [autoPlayOnMount, requestPlayback]);
 
   useEffect(() => {
     if (!autoPlayOnMount || autoplayAttemptedRef.current) return;
 
-    autoplayAttemptedRef.current = true;
     const staleLandingAudio = (window as MediaAudioWindow).__vampireSexLandingAudio;
     if (staleLandingAudio) {
       staleLandingAudio.pause();
       delete (window as MediaAudioWindow).__vampireSexLandingAudio;
     }
 
-    const playFrame = window.requestAnimationFrame(() => setIsPlaying(true));
+    const playFrame = window.requestAnimationFrame(requestPlayback);
 
     return () => window.cancelAnimationFrame(playFrame);
-  }, [autoPlayOnMount]);
+  }, [autoPlayOnMount, requestPlayback]);
+
+  useEffect(() => {
+    const handleAutoplayRequest = () => {
+      requestPlayback();
+    };
+
+    window.addEventListener('vss:attempt-autoplay', handleAutoplayRequest);
+    return () => window.removeEventListener('vss:attempt-autoplay', handleAutoplayRequest);
+  }, [requestPlayback]);
 
   const handleTimeUpdate = () => {
     if (audioRef.current) {

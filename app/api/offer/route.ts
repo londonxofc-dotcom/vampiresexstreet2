@@ -87,7 +87,7 @@ export async function POST(request: Request) {
     const resend = getResend();
     await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL ?? 'Booking Offers <onboarding@resend.dev>',
-      to: 'vampiresexworldwide@gmail.com',
+      to: 'bookings@vampiresexworldwide.com',
       subject: `Booking Offer: ${safeEvent} — $${safeAmount}`,
       html: `
         <h2>New Booking Offer</h2>

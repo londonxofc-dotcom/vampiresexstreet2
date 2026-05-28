@@ -4,18 +4,30 @@ import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 
 const SLIDES = [
-  // 16:9 landscape — fills perfectly
-  { src: '/images/slideshow/vs_photo_2.jpg', alt: 'Vampire Sex', pos: 'object-center' },
-  // Tall portrait — top keeps faces in frame
-  { src: '/images/slideshow/vs_photo_3.jpg', alt: 'Vampire Sex', pos: 'object-top' },
-  // 4:3 landscape
-  { src: '/images/slideshow/IMG_3765.jpg',   alt: 'Vampire Sex', pos: 'object-center' },
-  // Square
-  { src: '/images/slideshow/vs_photo_1.jpg', alt: 'Vampire Sex', pos: 'object-center' },
-  // Tall portrait — top keeps faces in frame
-  { src: '/images/slideshow/vs_photo_4.jpg', alt: 'Vampire Sex', pos: 'object-top' },
-  // Square
-  { src: '/images/slideshow/vs_photo_5.jpg', alt: 'Vampire Sex', pos: 'object-center' },
+  {
+    src: '/images/press/vs-ny-shoot-2.webp',
+    alt: 'London X and Reefro Cons of Vampire Sex in New York',
+    pos: 'object-[50%_12%]',
+    caption: 'NY street proof',
+  },
+  {
+    src: '/images/press/vs-ny-shoot-3.webp',
+    alt: 'London X and Reefro Cons of Vampire Sex laughing in New York',
+    pos: 'object-[50%_12%]',
+    caption: 'No clean myth',
+  },
+  {
+    src: '/images/press/vs-biggie-shoot.webp',
+    alt: 'London X and Reefro Cons of Vampire Sex in a studio portrait',
+    pos: 'object-center',
+    caption: 'Duo frame',
+  },
+  {
+    src: '/images/press/vs-biggie-shoot-playful.webp',
+    alt: 'London X and Reefro Cons of Vampire Sex with a dog in the foreground',
+    pos: 'object-[50%_10%]',
+    caption: 'Too much polish lies',
+  },
 ];
 
 export default function Slideshow() {
@@ -54,8 +66,12 @@ export default function Slideshow() {
         {String(current + 1).padStart(2, '0')} / {String(SLIDES.length).padStart(2, '0')}
       </div>
 
+      <div className="absolute bottom-6 left-6 z-20 hidden max-w-[70%] text-[9px] uppercase tracking-[0.34em] text-[#E8DCC8]/65 md:block">
+        {SLIDES[current].caption}
+      </div>
+
       {/* Dot navigation */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
+      <div className="absolute bottom-6 right-6 flex items-center gap-2 z-20">
         {SLIDES.map((_, i) => (
           <button
             key={i}

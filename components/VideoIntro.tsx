@@ -79,15 +79,13 @@ export default function VideoIntro({ onDone }: VideoIntroProps) {
 
   return (
     <div
-      className={`fixed inset-0 z-[500] flex h-[100svh] min-h-[100dvh] items-center justify-center overflow-hidden transition-colors duration-700 ${
-        exiting ? 'bg-[#E8DCC8]' : 'bg-black'
-      }`}
+      className="fixed inset-0 z-[500] isolate flex h-screen min-h-[100dvh] w-screen items-center justify-center overflow-hidden bg-black"
       role="dialog"
       aria-label="Vampire Sex intro"
     >
       <video
         ref={videoRef}
-        className={`h-auto max-h-[100svh] w-full object-contain object-center transition-opacity duration-500 ${
+        className={`h-full w-full max-w-none object-contain object-center transition-opacity duration-500 md:h-[100svh] md:w-auto ${
           exiting ? 'opacity-0' : 'opacity-100'
         }`}
         autoPlay

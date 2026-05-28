@@ -71,7 +71,7 @@ export async function POST(request: Request) {
       }),
       resend.emails.send({
         from,
-        to: 'vampiresexworldwide@gmail.com',
+        to: 'bookings@vampiresexworldwide.com',
         subject: 'New Bloodline Registry Signup',
         html: `
           <h2>New Bloodline Registry Member</h2>

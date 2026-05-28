@@ -3,16 +3,16 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Vampire Sex One-Sheet',
-  description: 'Official one-sheet for Vampire Sex: music, stats, booking info, and links.',
+  description: 'Official one-sheet for Vampire Sex: London X, Reefro Cons, music, proof, booking info, and links.',
 };
 
 const proof = [
-  ['2.71M', 'Total streams'],
-  ['9.9M', 'Video views'],
-  ['44', 'Chart placements'],
-  ['300', 'DJ supports'],
-  ['1.9M', 'Disco Party Baby Spotify streams'],
-  ['ADE 2025', 'Confirmed showcase'],
+  ['2.9M', 'Total streams'],
+  ['10.2M', 'Video views'],
+  ['47', 'Chart placements'],
+  ['306', 'DJ supports'],
+  ['370', 'Playlists'],
+  ['4.5M', 'Playlist reach'],
 ];
 
 const links = [
@@ -35,7 +35,7 @@ export default function EpkPage() {
               SEX
             </h1>
             <p className="mt-4 max-w-xl text-sm leading-relaxed uppercase text-[#1A1612]/82 md:text-base print:text-[13px]">
-              Miami minimal tech house duo with proven club traction, streaming history, and booking leverage.
+              London X and Reefro Cons. Miami minimal tech house with teeth: records with receipts, rooms that answer back, and a world that treats culture like the dress code.
             </p>
 
             <div className="mt-5 grid grid-cols-2 gap-3">
@@ -50,8 +50,8 @@ export default function EpkPage() {
             <div className="mt-5 border-t-[1.5px] border-[#1A1612]/15 pt-4">
               <p className="text-[9px] tracking-[0.32em] uppercase text-[#4A7C3F]">Key Story</p>
               <p className="mt-2 text-xs leading-relaxed uppercase text-[#1A1612]/78 md:text-sm print:text-[11px]">
-                Flagship record <span className="text-[#1A1612]">&quot;Disco Party Baby&quot;</span> has 1.9M Spotify streams. The project has earned
-                44 chart placements, 300 DJ supports, and a confirmed ADE 2025 appearance.
+                Flagship record <span className="text-[#1A1612]">&quot;Disco Party Baby&quot;</span> has 1.9M Spotify streams. Vampire Sex has earned
+                47 chart placements, 306 DJ supports, 370 playlists, and 4.5M playlist reach without sanding off the attitude.
               </p>
             </div>
           </section>
@@ -78,13 +78,13 @@ export default function EpkPage() {
             <div className="mt-6 border-t-[1.5px] border-[#1A1612] pt-5">
               <p className="text-[9px] tracking-[0.32em] uppercase text-[#4A7C3F]">Booking / Press</p>
               <a
-                href="mailto:vampiresexworldwide@gmail.com"
+                href="mailto:bookings@vampiresexworldwide.com"
                 className="mt-2 block break-words font-sans text-3xl leading-[0.95] tracking-normal underline decoration-[#4A7C3F] underline-offset-4 md:text-[2.35rem] print:text-[2rem]"
               >
-                vampiresexworldwide@gmail.com
+                bookings@vampiresexworldwide.com
               </a>
               <p className="mt-3 text-xs leading-relaxed uppercase text-[#1A1612]/72 md:text-sm print:text-[11px]">
-                Based in Miami, Florida. Ready for club dates, festival bookings, press, and branded opportunities that fit the project.
+                Based in Miami, Florida. Ready for club dates, festival bookings, press, and branded opportunities that can handle something respectfully disrespectful.
               </p>
             </div>
 

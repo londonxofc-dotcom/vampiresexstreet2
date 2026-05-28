@@ -13,6 +13,7 @@ import { MediaPlayer } from '@/components/MediaPlayer';
 import VideoIntro from '@/components/VideoIntro';
 import SoundToggle from '@/components/SoundToggle';
 import SectionNav from '@/components/SectionNav';
+import Slideshow from '@/components/Slideshow';
 
 const MERCH_SLIDES = [
   {
@@ -51,6 +52,7 @@ const MERCH_SLIDES = [
 
 export default function Home() {
   const [introDone, setIntroDone] = useState(false);
+  const [mediaAutoPlayRequested, setMediaAutoPlayRequested] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -72,6 +74,7 @@ export default function Home() {
   const [heroVisible, setHeroVisible] = useState(false);
   const [heroDetailsVisible, setHeroDetailsVisible] = useState(false);
   const [heroIntroStarted, setHeroIntroStarted] = useState(false);
+  const [heroCtaCueActive, setHeroCtaCueActive] = useState(false);
   const [soundToggleVisible, setSoundToggleVisible] = useState(false);
   const [isMobileViewport, setIsMobileViewport] = useState(false);
   const [activeMerchIndex, setActiveMerchIndex] = useState(0);
@@ -84,6 +87,54 @@ export default function Home() {
     media.addEventListener('change', updateMobileState);
     return () => media.removeEventListener('change', updateMobileState);
   }, []);
+
+  useEffect(() => {
+    const resetScroll = () => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+
+    window.history.scrollRestoration = 'manual';
+    resetScroll();
+    const raf = window.requestAnimationFrame(resetScroll);
+    const timeout = window.setTimeout(resetScroll, 0);
+
+    window.addEventListener('pageshow', resetScroll);
+
+    return () => {
+      window.removeEventListener('pageshow', resetScroll);
+      window.clearTimeout(timeout);
+      window.cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (mediaAutoPlayRequested) return;
+
+    const requestAutoplay = () => {
+      setMediaAutoPlayRequested(true);
+      window.dispatchEvent(new Event('vss:attempt-autoplay'));
+    };
+
+    window.addEventListener('pointerdown', requestAutoplay, { capture: true, passive: true });
+    window.addEventListener('keydown', requestAutoplay, { capture: true });
+
+    return () => {
+      window.removeEventListener('pointerdown', requestAutoplay, true);
+      window.removeEventListener('keydown', requestAutoplay, true);
+    };
+  }, [mediaAutoPlayRequested]);
+
+  useEffect(() => {
+    document.documentElement.style.overflow = introDone ? '' : 'hidden';
+    document.body.style.overflow = introDone ? '' : 'hidden';
+
+    return () => {
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    };
+  }, [introDone]);
 
   useEffect(() => {
     if (!introDone) return;
@@ -101,22 +152,6 @@ export default function Home() {
     observer.observe(hero);
 
     return () => observer.disconnect();
-  }, [introDone]);
-
-  useEffect(() => {
-    if (!introDone) return;
-
-    const resetScroll = () => {
-      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-    };
-
-    window.history.scrollRestoration = 'manual';
-    resetScroll();
-    const raf = window.requestAnimationFrame(resetScroll);
-
-    return () => {
-      window.cancelAnimationFrame(raf);
-    };
   }, [introDone]);
 
   useEffect(() => {
@@ -145,12 +180,19 @@ export default function Home() {
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) {
+      setHeroCtaCueActive(false);
       setSoundToggleVisible(true);
       return;
     }
 
-    const fallback = window.setTimeout(() => setSoundToggleVisible(true), 2350);
-    return () => window.clearTimeout(fallback);
+    setHeroCtaCueActive(true);
+    const clearCue = window.setTimeout(() => setHeroCtaCueActive(false), 2350);
+    const revealSoundToggle = window.setTimeout(() => setSoundToggleVisible(true), 2350);
+
+    return () => {
+      window.clearTimeout(clearCue);
+      window.clearTimeout(revealSoundToggle);
+    };
   }, [heroDetailsVisible]);
 
   useEffect(() => {
@@ -176,6 +218,9 @@ export default function Home() {
   }, [bloodlinePopupDismissed, introDone, registrySubmitted]);
 
   const completeIntro = useCallback(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
     setIntroDone(true);
   }, []);
 
@@ -244,9 +289,15 @@ export default function Home() {
   const activeMerch = MERCH_SLIDES[activeMerchIndex];
 
   return (
-    <main className="min-h-[100dvh] bg-[#0A0A0A]">
+    <>
       {!introDone && <VideoIntro onDone={completeIntro} />}
 
+    <main
+      aria-hidden={!introDone}
+      className={`bg-[#0A0A0A] transition-opacity duration-500 ${
+        introDone ? 'min-h-[100dvh] opacity-100' : 'h-[100dvh] overflow-hidden pointer-events-none opacity-0'
+      }`}
+    >
       <Navbar visible={introDone && (heroIntroStarted || heroDetailsVisible)} />
       <SectionNav visible={introDone && heroDetailsVisible} />
       {introDone && soundToggleVisible && <SoundToggle />}
@@ -274,15 +325,22 @@ export default function Home() {
             </h1>
 
             <div
+              aria-label="Vampire Sex founding year"
+              className={`mt-5 text-center transition-all duration-500 ${
+                heroDetailsVisible ? 'translate-y-0 opacity-100 blur-0' : 'translate-y-3 opacity-0 blur-[2px]'
+              }`}
+              style={{ fontFamily: '"Didot", "Bodoni 72", "Bodoni 72 Smallcaps", "Times New Roman", serif' }}
+            >
+              <p className="text-[10px] uppercase tracking-[0.38em] text-[#1A1612]/62">Est. 2023</p>
+            </div>
+
+            <div
               id="hero-proof-panel"
               className={`mt-10 flex w-full max-w-4xl flex-col justify-center gap-3 transition-all duration-500 sm:flex-row ${
-                heroDetailsVisible ? 'hero-cta-sequence translate-y-0 opacity-100 blur-0' : 'translate-y-4 opacity-0 blur-[2px]'
+                heroCtaCueActive ? 'hero-cta-sequence' : ''
+              } ${
+                heroDetailsVisible ? 'translate-y-0 opacity-100 blur-0' : 'translate-y-4 opacity-0 blur-[2px]'
               }`}
-              onAnimationEnd={(event) => {
-                if (event.animationName === 'hero-cta-drop') {
-                  setSoundToggleVisible(true);
-                }
-              }}
             >
               <button
                 type="button"
@@ -319,7 +377,7 @@ export default function Home() {
       >
         <div className="mx-auto flex max-w-[1600px] flex-col items-center justify-center gap-1 text-center sm:flex-row sm:justify-between">
           <span className="text-[10px] tracking-[0.34em] uppercase">Underground Music</span>
-          <span className="text-[10px] tracking-[0.24em] uppercase opacity-80">Miami, FL — Minimal Tech House — Est. 2020</span>
+          <span className="text-[10px] tracking-[0.24em] uppercase opacity-80">Miami, FL — Minimal Tech House — Est. 2023</span>
           <span className="text-[10px] tracking-[0.34em] uppercase">Streetwear</span>
         </div>
       </section>
@@ -333,25 +391,45 @@ export default function Home() {
               BUILT FOR<br />PACKED ROOMS
             </h2>
             <p className="mt-8 max-w-md text-lg normal-case leading-7 tracking-normal opacity-75">
-              Vampire Sex is not a costume page. It is a Miami minimal tech house project with streaming proof, chart history, DJ support, and a world that can expand into products without becoming a standard merch store.
+              Vampire Sex is London X and Reefro Cons. Miami minimal tech house with teeth: records with receipts, rooms that answer back, and a visual world that treats culture like a dress code. Respectfully disrespectful, never random.
             </p>
           </div>
 
           <div className="grid grid-cols-2 md:col-span-7">
+            <div className="relative col-span-2 min-h-[320px] border-b border-[#1A1612]/40 bg-[#0A0A0A] md:min-h-[420px]">
+              <Slideshow />
+            </div>
+            <div className="col-span-2 border-b border-[#1A1612]/40 bg-[#11100E] p-3">
+              <div className="relative overflow-hidden border border-[#E8DCC8]/18 bg-black">
+                <video
+                  className="aspect-video w-full object-cover opacity-90"
+                  src="/video/press/vampire-sex-promo-1-hq.mp4"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-black/70 to-transparent px-4 py-3 text-[9px] uppercase tracking-[0.28em] text-[#E8DCC8]/70">
+                  <span>Promo reel</span>
+                  <span>00:30 / muted proof</span>
+                </div>
+              </div>
+            </div>
             <div className="border-b border-r border-[#1A1612]/40 p-7 md:p-10">
-              <p className="font-sans text-6xl leading-none tracking-tighter md:text-7xl">2.71M</p>
+              <p className="font-sans text-6xl leading-none tracking-tighter md:text-7xl">2.9M</p>
               <p className="mt-3 text-[10px] uppercase tracking-[0.28em] opacity-55">Total Streams</p>
             </div>
             <div className="border-b border-[#1A1612]/40 p-7 md:p-10">
-              <p className="font-sans text-6xl leading-none tracking-tighter md:text-7xl">9.9M</p>
+              <p className="font-sans text-6xl leading-none tracking-tighter md:text-7xl">10.2M</p>
               <p className="mt-3 text-[10px] uppercase tracking-[0.28em] opacity-55">Video Views</p>
             </div>
             <div className="border-r border-[#1A1612]/40 p-7 md:p-10">
-              <p className="font-sans text-6xl leading-none tracking-tighter md:text-7xl">44</p>
+              <p className="font-sans text-6xl leading-none tracking-tighter md:text-7xl">47</p>
               <p className="mt-3 text-[10px] uppercase tracking-[0.28em] opacity-55">Chart Placements</p>
             </div>
             <div className="p-7 md:p-10">
-              <p className="font-sans text-6xl leading-none tracking-tighter md:text-7xl">300</p>
+              <p className="font-sans text-6xl leading-none tracking-tighter md:text-7xl">306</p>
               <p className="mt-3 text-[10px] uppercase tracking-[0.28em] opacity-55">DJ Supports</p>
             </div>
           </div>
@@ -458,13 +536,13 @@ export default function Home() {
       </section>
 
       {/* SECTION 4 — PRODUCT CAROUSEL */}
-      <section id="products-section" data-zoom="out" data-section-intro="dark" className="crimson-overlap-section bg-[#0A0A0A] text-[#F2EDE4] py-20 px-6 md:px-12 relative z-30">
+      <section id="products-section" data-zoom="out" data-section-intro="dark" className="crimson-overlap-section bg-[#0A0A0A] text-[#F2EDE4] px-6 py-16 pb-[calc(7.5rem+env(safe-area-inset-bottom))] md:px-12 md:py-20 relative z-30">
         <div className="parallax-bg bg-[#0A0A0A]"></div>
         <div className="section-inner section-intro-content relative z-10 max-w-[1600px] mx-auto">
           <CrimsonHeader />
           <div className="mb-10 flex flex-col gap-4 border-y-[1.5px] border-[#4A7C3F]/35 py-8 text-center md:mb-12">
             <p className="text-[10px] tracking-[0.42em] text-[#4A7C3F] uppercase">Drop Archive / Preview</p>
-            <h2 className="font-sans text-[12vw] leading-[0.9] tracking-tighter text-[#F2EDE4] md:text-7xl">
+            <h2 className="mx-auto max-w-[11ch] font-sans text-[clamp(3.05rem,11vw,4.6rem)] leading-[0.88] tracking-tighter text-[#F2EDE4] [text-wrap:balance] md:max-w-none md:text-7xl">
               New Merchandise In Development
             </h2>
             <p className="mx-auto max-w-2xl text-base leading-7 normal-case tracking-normal text-[#F2EDE4]/62">
@@ -495,7 +573,7 @@ export default function Home() {
               <div className="flex flex-col justify-between gap-8 p-6 md:p-10 lg:min-h-[620px] lg:p-12">
                 <div>
                   <p className="mb-5 font-mono text-[10px] uppercase tracking-[0.42em] text-[#4A7C3F]">Crimson Archive Slide</p>
-                  <h3 className="max-w-[12ch] font-sans text-[15vw] leading-[0.84] tracking-tighter text-[#F2EDE4] sm:text-7xl lg:text-[6.4vw]">
+                  <h3 className="max-w-[11ch] font-sans text-[clamp(3.2rem,13.5vw,5rem)] leading-[0.84] tracking-tighter text-[#F2EDE4] sm:max-w-[12ch] sm:text-7xl lg:text-[6.4vw]">
                     {activeMerch.title}
                   </h3>
                   <p className="mt-6 max-w-md text-base leading-7 normal-case tracking-normal text-[#F2EDE4]/60">
@@ -624,12 +702,12 @@ export default function Home() {
       </section>
 
       {/* SECTION 6 — LISTEN / BOOKING ROUTES */}
-      <section id="epk-section" data-zoom="neutral" data-section-intro="dark" className="bg-[#0A0A0A] text-[#F2EDE4] py-24 px-6 md:px-12 relative z-50 overflow-hidden">
+      <section id="epk-section" data-zoom="neutral" data-section-intro="dark" className="bg-[#0A0A0A] text-[#F2EDE4] px-6 pt-20 pb-[calc(9rem+env(safe-area-inset-bottom))] md:px-12 md:py-24 relative z-50 overflow-hidden">
         <div className="section-intro-content max-w-[1500px] mx-auto relative z-10">
           <div className="mb-12 grid grid-cols-1 gap-8 border-y-[1.5px] border-[#4A7C3F]/30 py-10 md:grid-cols-[1.1fr_0.9fr] md:items-end">
             <div>
               <p className="mb-4 text-[10px] uppercase tracking-[0.42em] text-[#4A7C3F]">Listen / Booking / Press</p>
-              <h2 className="font-sans text-[16vw] leading-[0.82] tracking-tighter md:text-[7vw]">
+              <h2 className="font-sans text-[clamp(4rem,14vw,6.6rem)] leading-[0.78] tracking-tighter md:text-[7vw]">
                 HEAR IT.<br />BOOK IT.
               </h2>
             </div>
@@ -639,7 +717,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_420px]">
-            <MediaPlayer />
+            <MediaPlayer autoPlayOnMount={mediaAutoPlayRequested} />
 
             <div className="flex flex-col justify-between gap-5 border-[1.5px] border-[#4A7C3F]/45 bg-[#11100E] p-6 md:p-8">
               <div>
@@ -795,10 +873,10 @@ export default function Home() {
             <div className="space-y-3">
               <p className="text-[9px] tracking-[0.3em] opacity-40 uppercase">Bookings</p>
               <a
-                href="mailto:vampiresexworldwide@gmail.com"
+                href="mailto:bookings@vampiresexworldwide.com"
                 className="block break-words text-sm tracking-wider transition-colors hover:text-[#4A7C3F]"
               >
-                vampiresexworldwide<br />@gmail.com
+                bookings<br />@vampiresexworldwide.com
               </a>
             </div>
             <div className="space-y-3">
@@ -839,7 +917,7 @@ export default function Home() {
                 <div className="py-16 flex flex-col items-center gap-6 text-center">
                   <div className="w-2 h-2 rounded-full bg-[#4A7C3F]"></div>
                   <p className="font-sans text-3xl tracking-tighter text-[#F2EDE4]">Offer Received.</p>
-                  <p className="text-xs tracking-[0.2em] opacity-50 uppercase">We&apos;ll be in touch at vampiresexworldwide@gmail.com</p>
+                  <p className="text-xs tracking-[0.2em] opacity-50 uppercase">We&apos;ll be in touch at bookings@vampiresexworldwide.com</p>
                   <button
                     type="button"
                     onClick={() => { setIsOfferModalOpen(false); setOfferSubmitted(false); }}
@@ -990,5 +1068,6 @@ export default function Home() {
       )}
 
     </main>
+    </>
   );
 }

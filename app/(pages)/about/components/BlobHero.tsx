@@ -54,8 +54,8 @@ export default function BlobHero() {
         </Canvas>
       </div>
       <div className="absolute top-8 right-8 text-white text-right z-10">
-        <a href="mailto:vampiresexworldwide@gmail.com" className="text-xs uppercase tracking-widest hover:text-red-600 transition">
-          VAMPIRESEXWORLDWIDE@GMAIL.COM
+        <a href="mailto:bookings@vampiresexworldwide.com" className="text-xs uppercase tracking-widest hover:text-red-600 transition">
+          BOOKINGS@VAMPIRESEXWORLDWIDE.COM
         </a>
       </div>
       <div className="absolute inset-0 flex items-end justify-center pb-20 z-10">

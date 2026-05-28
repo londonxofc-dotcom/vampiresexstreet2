@@ -22,14 +22,14 @@ export const metadata: Metadata = {
     title: 'VAMPIRE SEX',
     description: 'Minimal tech house DJ duo. Official merch, music, and booking.',
     siteName: 'VAMPIRE SEX',
-    images: [{ url: '/images/slideshow/vs_photo_3.jpg', width: 1920, height: 1080 }],
+    images: [{ url: '/images/press/vs-ny-shoot-2.webp', width: 1800, height: 1200 }],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'VAMPIRE SEX',
     description: 'Minimal tech house DJ duo. Official merch, music, and booking.',
-    images: ['/images/slideshow/vs_photo_3.jpg'],
+    images: ['/images/press/vs-ny-shoot-2.webp'],
   },
   icons: {
     icon: '/icon.svg',

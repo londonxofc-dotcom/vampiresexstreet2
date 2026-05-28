@@ -39,6 +39,9 @@ export default function SoundToggle({ visible = true }: { visible?: boolean }) {
       if (nextMuted && media.tagName === 'AUDIO') media.pause();
     });
     window.dispatchEvent(new Event('vss:sound-muted'));
+    if (!nextMuted) {
+      window.dispatchEvent(new Event('vss:attempt-autoplay'));
+    }
   };
 
   if (!visible) return null;
@@ -49,7 +52,7 @@ export default function SoundToggle({ visible = true }: { visible?: boolean }) {
       onClick={toggleSound}
       aria-pressed={muted}
       aria-label={muted ? 'Turn sound on' : 'Mute site sound'}
-      className={`sound-signal-toggle fixed bottom-[calc(env(safe-area-inset-bottom)+11.25rem)] right-5 z-[210] min-h-9 border border-[#1A1612]/25 bg-[#0A0A0A]/20 px-3 py-2 font-mono text-[8px] uppercase tracking-[0.28em] text-[#1A1612]/60 backdrop-blur-[2px] transition-all duration-700 hover:border-[#1A1612]/45 hover:bg-[#E8DCC8]/20 hover:text-[#1A1612] hover:tracking-[0.32em] md:bottom-6 md:right-6 ${
+      className={`sound-signal-toggle fixed bottom-[calc(env(safe-area-inset-bottom)+4.15rem)] right-3 z-[210] min-h-9 border border-[#1A1612]/25 bg-[#0A0A0A]/20 px-3 py-2 font-mono text-[8px] uppercase tracking-[0.28em] text-[#1A1612]/60 backdrop-blur-[2px] transition-all duration-700 hover:border-[#1A1612]/45 hover:bg-[#E8DCC8]/20 hover:text-[#1A1612] hover:tracking-[0.32em] md:bottom-6 md:right-6 ${
         entered ? 'translate-y-0 opacity-100 blur-0' : 'translate-y-2 opacity-0 blur-[2px]'
       }`}
     >
