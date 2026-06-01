@@ -88,6 +88,15 @@ export default function BonanzaPomelliBlueprint() {
     };
   }, []);
 
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setShowSuccess(true);
+    setTimeout(() => {
+      setShowSuccess(false);
+      setFormData({ name: '', email: '', service: 'boarding', message: '' });
+    }, 5000);
+  };
+
   // REAL LIVE CRAWLER & PARSER FOR THE TARGET SITE URL
   const handleExtractDna = async () => {
     setIsExtracting(true);
