@@ -1,20 +1,33 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Marketing Plugin — Customized for Vampire Sex
 
-# Run and deploy your AI Studio app
+Content creation, campaign planning, brand voice management, competitive analysis, and performance reporting — tuned for **Vampire Sex** (minimal tech house DJ duo, Miami FL, Sex Sells Records).
 
-This contains everything you need to run your app locally.
+> Brand voice: **respectfully disrespectful**. See `brand/PROFILE.md` for full voice, audience, vocabulary, and reference assets.
 
-View your app in AI Studio: https://ai.studio/apps/245b172c-e2db-4c9c-9d63-804607ff50b9
+## Commands
 
-## Run Locally
+| Command | Description |
+|---|---|
+| `/draft-content` | Draft drop announcements, IG captions, EPK copy, newsletter blasts, press blurbs |
+| `/campaign-plan` | Plan a drop, single release, tour, or fan-list push — week-by-week with KPIs |
+| `/brand-review` | Review copy against the Vampire Sex voice (respectfully disrespectful, terse, ALL CAPS, no filler) |
+| `/competitive-brief` | Compare positioning vs. other minimal tech house acts / labels |
+| `/performance-report` | Pull from Spotify for Artists, Apple Music for Artists, Songstats — wins, drops, next moves |
+| `/seo-audit` | Audit vampiresex.com — keyword targets, content gaps, on-page checks |
+| `/email-sequence` | Design Bloodline early-access flows, drop-launch sequences, win-back to dormant fans |
 
-**Prerequisites:**  Node.js
+## Connected analytics
 
+- **Spotify for Artists** — Spotify streams, listeners, playlist activity
+- **Apple Music for Artists** — Apple plays, Shazams
+- **Songstats** — cross-platform aggregate, charts, playlist tracking
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Skipped on purpose
+
+Marketing automation, Klaviyo/Mailchimp, Ahrefs/Semrush, Notion, Canva/Figma — re-run the customizer if any of these come into play later.
+
+## Where the brand source-of-truth lives
+
+- `brand/PROFILE.md` (this plugin) — voice, audience, vocabulary
+- Project codebase — `app/layout.tsx`, `app/page.tsx`, `metadata.json`, `CLAUDE.md`
+
