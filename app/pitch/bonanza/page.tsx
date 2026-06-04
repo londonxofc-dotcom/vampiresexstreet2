@@ -241,7 +241,7 @@ export default function BonanzaPomelliBlueprint() {
             {activeDnaTab === 'colors' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in">
                 <div className="space-y-4">
-                  <span className="block text-xs text-[#E53E3E] font-bold tracking-wider uppercase">// TRADEMARK COLOR CORES DETECTED</span>
+                  <span className="block text-xs text-[#E53E3E] font-bold tracking-wider uppercase">TRADEMARK COLOR CORES DETECTED</span>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between bg-[#1A365D] p-3.5 rounded border border-white/5 text-xs">
                       <span>{showDnaResults ? dnaReport.detectedColors[0] : '#C53030 (Trademark Crimson Red)'}</span>
@@ -253,12 +253,12 @@ export default function BonanzaPomelliBlueprint() {
                     </div>
                   </div>
                   <p className="text-[11px] text-[#F8F9FA]/60 leading-relaxed font-light">
-                    * Pomelli mapped the brand\'s authentic Red & Blue coordinates. 
+                    * Pomelli mapped the brand&apos;s authentic Red & Blue coordinates.
                   </p>
                 </div>
 
                 <div className="space-y-4">
-                  <span className="block text-xs text-green-400 font-bold tracking-wider uppercase">// POMELLI ELEVATED PALETTE PROPOSAL</span>
+                  <span className="block text-xs text-green-400 font-bold tracking-wider uppercase">POMELLI ELEVATED PALETTE PROPOSAL</span>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between bg-[#1A365D] p-3.5 rounded border border-white/5 text-xs">
                       <span>Royal Stables Navy (#1A365D - trust & safety)</span>
@@ -276,7 +276,7 @@ export default function BonanzaPomelliBlueprint() {
             {/* Tab 2: Typography DNA */}
             {activeDnaTab === 'fonts' && (
               <div className="space-y-6 animate-fade-in font-mono text-xs text-[#F8F9FA]/85">
-                <span className="block text-xs text-[#E53E3E] font-bold tracking-wider uppercase">// TYPOGRAPHY MATRIX</span>
+                <span className="block text-xs text-[#E53E3E] font-bold tracking-wider uppercase">TYPOGRAPHY MATRIX</span>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="bg-[#1A365D] p-5 rounded-xl border border-white/5 space-y-3">
                     <span className="block text-red-400 font-bold">CURRENT STACKS SCANNED</span>

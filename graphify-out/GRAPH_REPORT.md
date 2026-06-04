@@ -1,11 +1,11 @@
-# Graph Report - vampire-sex-street-main  (2026-05-28)
+# Graph Report - vampire-sex-street-main  (2026-06-04)
 
 ## Corpus Check
-- 40 files · ~803,611 words
+- 44 files · ~823,080 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 131 nodes · 134 edges · 6 communities detected
+- 139 nodes · 138 edges · 6 communities detected
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 

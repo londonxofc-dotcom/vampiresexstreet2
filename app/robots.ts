@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://vampiresex.com/sitemap.xml',
+    sitemap: 'https://vampiresexworldwide.com/sitemap.xml',
   };
 }

@@ -17,7 +17,7 @@ const spaceMono = Space_Mono({
 export const metadata: Metadata = {
   title: 'VAMPIRE SEX',
   description: 'Minimal tech house DJ duo. Official merch, music, and booking.',
-  metadataBase: new URL('https://vampiresex.com'),
+  metadataBase: new URL('https://vampiresexworldwide.com'),
   openGraph: {
     title: 'VAMPIRE SEX',
     description: 'Minimal tech house DJ duo. Official merch, music, and booking.',

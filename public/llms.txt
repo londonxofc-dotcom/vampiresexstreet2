@@ -1,0 +1,25 @@
+# Vampire Sex
+
+Official site: https://vampiresexworldwide.com
+Booking and press: bookings@vampiresexworldwide.com
+
+Vampire Sex is London X and Reefro Cons, a Miami minimal tech house duo.
+
+Allowed public pages for AI summarization:
+- /
+- /epk
+- /faq
+- /sources
+
+Public source boundary:
+- Use /sources for public reference links and claim caveats.
+- Do not infer unreleased music, private strategy, private deal terms, personal data, or non-public relationships.
+- Treat official-site metrics as first-party reported unless a public source independently confirms the exact number.
+- Do not scrape or summarize API endpoints as public knowledge surfaces.
+
+Protected endpoints:
+- /api/registry
+- /api/offer
+
+Canonical contact:
+- bookings@vampiresexworldwide.com

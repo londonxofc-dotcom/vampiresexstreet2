@@ -9,7 +9,7 @@
       "source_file": "postcss.config.mjs",
       "source_location": "L1",
       "id": "postcss_config_mjs",
-      "community": 26,
+      "community": 29,
       "norm_label": "postcss.config.mjs"
     },
     {
@@ -18,7 +18,7 @@
       "source_file": "next-env.d.ts",
       "source_location": "L1",
       "id": "next_env_d_ts",
-      "community": 27,
+      "community": 30,
       "norm_label": "next-env.d.ts"
     },
     {
@@ -27,7 +27,7 @@
       "source_file": "eslint.config.mjs",
       "source_location": "L1",
       "id": "eslint_config_mjs",
-      "community": 28,
+      "community": 31,
       "norm_label": "eslint.config.mjs"
     },
     {
@@ -36,7 +36,7 @@
       "source_file": "next.config.ts",
       "source_location": "L1",
       "id": "next_config_ts",
-      "community": 29,
+      "community": 32,
       "norm_label": "next.config.ts"
     },
     {
@@ -45,7 +45,7 @@
       "source_file": "app/robots.ts",
       "source_location": "L1",
       "id": "app_robots_ts",
-      "community": 10,
+      "community": 11,
       "norm_label": "robots.ts"
     },
     {
@@ -54,7 +54,7 @@
       "source_file": "app/robots.ts",
       "source_location": "L3",
       "id": "robots_robots",
-      "community": 10,
+      "community": 11,
       "norm_label": "robots()"
     },
     {
@@ -63,7 +63,7 @@
       "source_file": "app/sitemap.ts",
       "source_location": "L1",
       "id": "app_sitemap_ts",
-      "community": 11,
+      "community": 12,
       "norm_label": "sitemap.ts"
     },
     {
@@ -72,7 +72,7 @@
       "source_file": "app/sitemap.ts",
       "source_location": "L3",
       "id": "sitemap_sitemap",
-      "community": 11,
+      "community": 12,
       "norm_label": "sitemap()"
     },
     {
@@ -81,7 +81,7 @@
       "source_file": "app/layout.tsx",
       "source_location": "L1",
       "id": "app_layout_tsx",
-      "community": 30,
+      "community": 33,
       "norm_label": "layout.tsx"
     },
     {
@@ -132,10 +132,46 @@
     {
       "label": "page.tsx",
       "file_type": "code",
+      "source_file": "app/pitch/bonanza/page.tsx",
+      "source_location": "L1",
+      "id": "app_pitch_bonanza_page_tsx",
+      "community": 9,
+      "norm_label": "page.tsx"
+    },
+    {
+      "label": "handleExtractDna()",
+      "file_type": "code",
+      "source_file": "app/pitch/bonanza/page.tsx",
+      "source_location": "L99",
+      "id": "page_handleextractdna",
+      "community": 9,
+      "norm_label": "handleextractdna()"
+    },
+    {
+      "label": "handleFormSubmit()",
+      "file_type": "code",
+      "source_file": "app/pitch/bonanza/page.tsx",
+      "source_location": "L148",
+      "id": "page_handleformsubmit",
+      "community": 9,
+      "norm_label": "handleformsubmit()"
+    },
+    {
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app/pitch/bonanza/old/page.tsx",
+      "source_location": "L1",
+      "id": "app_pitch_bonanza_old_page_tsx",
+      "community": 34,
+      "norm_label": "page.tsx"
+    },
+    {
+      "label": "page.tsx",
+      "file_type": "code",
       "source_file": "app/epk/page.tsx",
       "source_location": "L1",
       "id": "app_epk_page_tsx",
-      "community": 12,
+      "community": 13,
       "norm_label": "page.tsx"
     },
     {
@@ -144,7 +180,7 @@
       "source_file": "app/epk/page.tsx",
       "source_location": "L25",
       "id": "page_epkpage",
-      "community": 12,
+      "community": 13,
       "norm_label": "epkpage()"
     },
     {
@@ -153,7 +189,7 @@
       "source_file": "app/(pages)/about/page.tsx",
       "source_location": "L1",
       "id": "app_pages_about_page_tsx",
-      "community": 13,
+      "community": 14,
       "norm_label": "page.tsx"
     },
     {
@@ -162,7 +198,7 @@
       "source_file": "app/(pages)/about/page.tsx",
       "source_location": "L1",
       "id": "page_aboutpage",
-      "community": 13,
+      "community": 14,
       "norm_label": "aboutpage()"
     },
     {
@@ -171,7 +207,7 @@
       "source_file": "app/(pages)/about/components/CrimsonCollection.tsx",
       "source_location": "L1",
       "id": "app_pages_about_components_crimsoncollection_tsx",
-      "community": 31,
+      "community": 35,
       "norm_label": "crimsoncollection.tsx"
     },
     {
@@ -180,7 +216,7 @@
       "source_file": "app/(pages)/about/components/Blood.tsx",
       "source_location": "L1",
       "id": "app_pages_about_components_blood_tsx",
-      "community": 32,
+      "community": 36,
       "norm_label": "blood.tsx"
     },
     {
@@ -189,7 +225,7 @@
       "source_file": "app/(pages)/about/components/Footer.tsx",
       "source_location": "L1",
       "id": "app_pages_about_components_footer_tsx",
-      "community": 33,
+      "community": 37,
       "norm_label": "footer.tsx"
     },
     {
@@ -198,7 +234,7 @@
       "source_file": "app/(pages)/about/components/BlobHero.tsx",
       "source_location": "L1",
       "id": "app_pages_about_components_blobhero_tsx",
-      "community": 14,
+      "community": 15,
       "norm_label": "blobhero.tsx"
     },
     {
@@ -207,7 +243,7 @@
       "source_file": "app/(pages)/about/components/BlobHero.tsx",
       "source_location": "L8",
       "id": "blobhero_animatedblob",
-      "community": 14,
+      "community": 15,
       "norm_label": "animatedblob()"
     },
     {
@@ -216,7 +252,7 @@
       "source_file": "app/(pages)/about/components/EPK.tsx",
       "source_location": "L1",
       "id": "app_pages_about_components_epk_tsx",
-      "community": 34,
+      "community": 38,
       "norm_label": "epk.tsx"
     },
     {
@@ -225,8 +261,44 @@
       "source_file": "app/(pages)/about/components/Navigation.tsx",
       "source_location": "L1",
       "id": "app_pages_about_components_navigation_tsx",
-      "community": 35,
+      "community": 39,
       "norm_label": "navigation.tsx"
+    },
+    {
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app/faq/page.tsx",
+      "source_location": "L1",
+      "id": "app_faq_page_tsx",
+      "community": 16,
+      "norm_label": "page.tsx"
+    },
+    {
+      "label": "FaqPage()",
+      "file_type": "code",
+      "source_file": "app/faq/page.tsx",
+      "source_location": "L31",
+      "id": "page_faqpage",
+      "community": 16,
+      "norm_label": "faqpage()"
+    },
+    {
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app/sources/page.tsx",
+      "source_location": "L1",
+      "id": "app_sources_page_tsx",
+      "community": 17,
+      "norm_label": "page.tsx"
+    },
+    {
+      "label": "SourcesPage()",
+      "file_type": "code",
+      "source_file": "app/sources/page.tsx",
+      "source_location": "L20",
+      "id": "page_sourcespage",
+      "community": 17,
+      "norm_label": "sourcespage()"
     },
     {
       "label": "route.ts",
@@ -441,7 +513,7 @@
       "source_file": "components/SplitFlapText.tsx",
       "source_location": "L1",
       "id": "components_splitflaptext_tsx",
-      "community": 15,
+      "community": 18,
       "norm_label": "splitflaptext.tsx"
     },
     {
@@ -450,7 +522,7 @@
       "source_file": "components/SplitFlapText.tsx",
       "source_location": "L7",
       "id": "splitflaptext_getcharindex",
-      "community": 15,
+      "community": 18,
       "norm_label": "getcharindex()"
     },
     {
@@ -612,7 +684,7 @@
       "source_file": "components/SlotMachineText.tsx",
       "source_location": "L1",
       "id": "components_slotmachinetext_tsx",
-      "community": 16,
+      "community": 19,
       "norm_label": "slotmachinetext.tsx"
     },
     {
@@ -621,7 +693,7 @@
       "source_file": "components/SlotMachineText.tsx",
       "source_location": "L9",
       "id": "slotmachinetext_buildreel",
-      "community": 16,
+      "community": 19,
       "norm_label": "buildreel()"
     },
     {
@@ -630,7 +702,7 @@
       "source_file": "components/StatCounter.tsx",
       "source_location": "L1",
       "id": "components_statcounter_tsx",
-      "community": 17,
+      "community": 20,
       "norm_label": "statcounter.tsx"
     },
     {
@@ -639,7 +711,7 @@
       "source_file": "components/StatCounter.tsx",
       "source_location": "L14",
       "id": "statcounter_statcounter",
-      "community": 17,
+      "community": 20,
       "norm_label": "statcounter()"
     },
     {
@@ -648,7 +720,7 @@
       "source_file": "components/SoundToggle.tsx",
       "source_location": "L1",
       "id": "components_soundtoggle_tsx",
-      "community": 18,
+      "community": 21,
       "norm_label": "soundtoggle.tsx"
     },
     {
@@ -657,7 +729,7 @@
       "source_file": "components/SoundToggle.tsx",
       "source_location": "L9",
       "id": "soundtoggle_soundtoggle",
-      "community": 18,
+      "community": 21,
       "norm_label": "soundtoggle()"
     },
     {
@@ -666,7 +738,7 @@
       "source_file": "components/TextBlob.tsx",
       "source_location": "L1",
       "id": "components_textblob_tsx",
-      "community": 36,
+      "community": 40,
       "norm_label": "textblob.tsx"
     },
     {
@@ -675,7 +747,7 @@
       "source_file": "components/TextScramble.tsx",
       "source_location": "L1",
       "id": "components_textscramble_tsx",
-      "community": 9,
+      "community": 10,
       "norm_label": "textscramble.tsx"
     },
     {
@@ -684,7 +756,7 @@
       "source_file": "components/TextScramble.tsx",
       "source_location": "L7",
       "id": "textscramble_deterministicglyph",
-      "community": 9,
+      "community": 10,
       "norm_label": "deterministicglyph()"
     },
     {
@@ -693,7 +765,7 @@
       "source_file": "components/TextScramble.tsx",
       "source_location": "L20",
       "id": "textscramble_textscramble",
-      "community": 9,
+      "community": 10,
       "norm_label": "textscramble()"
     },
     {
@@ -702,7 +774,7 @@
       "source_file": "components/VideoIntro.tsx",
       "source_location": "L1",
       "id": "components_videointro_tsx",
-      "community": 19,
+      "community": 22,
       "norm_label": "videointro.tsx"
     },
     {
@@ -711,7 +783,7 @@
       "source_file": "components/VideoIntro.tsx",
       "source_location": "L65",
       "id": "videointro_onkeydown",
-      "community": 19,
+      "community": 22,
       "norm_label": "onkeydown()"
     },
     {
@@ -720,7 +792,7 @@
       "source_file": "components/HeroBlob.tsx",
       "source_location": "L1",
       "id": "components_heroblob_tsx",
-      "community": 37,
+      "community": 41,
       "norm_label": "heroblob.tsx"
     },
     {
@@ -729,7 +801,7 @@
       "source_file": "components/GlitchText.tsx",
       "source_location": "L1",
       "id": "components_glitchtext_tsx",
-      "community": 20,
+      "community": 23,
       "norm_label": "glitchtext.tsx"
     },
     {
@@ -738,7 +810,7 @@
       "source_file": "components/GlitchText.tsx",
       "source_location": "L10",
       "id": "glitchtext_glitchtext",
-      "community": 20,
+      "community": 23,
       "norm_label": "glitchtext()"
     },
     {
@@ -855,7 +927,7 @@
       "source_file": "components/Slideshow.tsx",
       "source_location": "L1",
       "id": "components_slideshow_tsx",
-      "community": 38,
+      "community": 42,
       "norm_label": "slideshow.tsx"
     },
     {
@@ -864,7 +936,7 @@
       "source_file": "components/CrimsonHeader.tsx",
       "source_location": "L1",
       "id": "components_crimsonheader_tsx",
-      "community": 21,
+      "community": 24,
       "norm_label": "crimsonheader.tsx"
     },
     {
@@ -873,7 +945,7 @@
       "source_file": "components/CrimsonHeader.tsx",
       "source_location": "L13",
       "id": "crimsonheader_crimsonheader",
-      "community": 21,
+      "community": 24,
       "norm_label": "crimsonheader()"
     },
     {
@@ -882,7 +954,7 @@
       "source_file": "components/TypewriterText.tsx",
       "source_location": "L1",
       "id": "components_typewritertext_tsx",
-      "community": 22,
+      "community": 25,
       "norm_label": "typewritertext.tsx"
     },
     {
@@ -891,7 +963,7 @@
       "source_file": "components/TypewriterText.tsx",
       "source_location": "L11",
       "id": "typewritertext_typewritertext",
-      "community": 22,
+      "community": 25,
       "norm_label": "typewritertext()"
     },
     {
@@ -990,7 +1062,7 @@
       "source_file": "hooks/useScrollAnimations.ts",
       "source_location": "L1",
       "id": "hooks_usescrollanimations_ts",
-      "community": 23,
+      "community": 26,
       "norm_label": "usescrollanimations.ts"
     },
     {
@@ -999,7 +1071,7 @@
       "source_file": "hooks/useScrollAnimations.ts",
       "source_location": "L8",
       "id": "usescrollanimations_usescrollanimations",
-      "community": 23,
+      "community": 26,
       "norm_label": "usescrollanimations()"
     },
     {
@@ -1008,7 +1080,7 @@
       "source_file": "hooks/use-mobile.ts",
       "source_location": "L1",
       "id": "hooks_use_mobile_ts",
-      "community": 24,
+      "community": 27,
       "norm_label": "use-mobile.ts"
     },
     {
@@ -1017,7 +1089,7 @@
       "source_file": "hooks/use-mobile.ts",
       "source_location": "L5",
       "id": "use_mobile_useismobile",
-      "community": 24,
+      "community": 27,
       "norm_label": "useismobile()"
     },
     {
@@ -1170,7 +1242,7 @@
       "source_file": "lib/utils.ts",
       "source_location": "L1",
       "id": "lib_utils_ts",
-      "community": 25,
+      "community": 28,
       "norm_label": "utils.ts"
     },
     {
@@ -1179,7 +1251,7 @@
       "source_file": "lib/utils.ts",
       "source_location": "L4",
       "id": "utils_cn",
-      "community": 25,
+      "community": 28,
       "norm_label": "cn()"
     }
   ],
@@ -1259,6 +1331,30 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "app/pitch/bonanza/page.tsx",
+      "source_location": "L99",
+      "weight": 1.0,
+      "_src": "app_pitch_bonanza_page_tsx",
+      "_tgt": "page_handleextractdna",
+      "source": "app_pitch_bonanza_page_tsx",
+      "target": "page_handleextractdna",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/pitch/bonanza/page.tsx",
+      "source_location": "L148",
+      "weight": 1.0,
+      "_src": "app_pitch_bonanza_page_tsx",
+      "_tgt": "page_handleformsubmit",
+      "source": "app_pitch_bonanza_page_tsx",
+      "target": "page_handleformsubmit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "app/epk/page.tsx",
       "source_location": "L25",
       "weight": 1.0,
@@ -1290,6 +1386,30 @@
       "_tgt": "blobhero_animatedblob",
       "source": "app_pages_about_components_blobhero_tsx",
       "target": "blobhero_animatedblob",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/faq/page.tsx",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_src": "app_faq_page_tsx",
+      "_tgt": "page_faqpage",
+      "source": "app_faq_page_tsx",
+      "target": "page_faqpage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/sources/page.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_src": "app_sources_page_tsx",
+      "_tgt": "page_sourcespage",
+      "source": "app_sources_page_tsx",
+      "target": "page_sourcespage",
       "confidence_score": 1.0
     },
     {
